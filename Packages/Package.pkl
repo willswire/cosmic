@@ -1,0 +1,13 @@
+module Package
+
+/// The name of this package.
+name: String
+
+/// The pre-built binary URL of this package.
+url: String
+
+/// The version of the binary.
+version: String
+
+/// The SHA-256 hash of the binary.
+hash: String

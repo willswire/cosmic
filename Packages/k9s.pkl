@@ -1,0 +1,9 @@
+amends "Package.pkl"
+
+name = "k9s"
+
+url = "https://github.com/derailed/k9s/releases/download/v\(version)/k9s_Darwin_arm64.tar.gz"
+
+version = "0.32.5"
+
+hash = "916a51cc8e0c48811a1b459cfad98201ba9e0b90e5741d8a889bed718169f17d"
