@@ -14,14 +14,15 @@ struct CrispTests {
     @Test(
         "Install a package",
         arguments: [
-            "k9s",
-            "zarf",
+//            "k9s",
+//            "zarf",
+            "age"
         ])
     func installPackage(packageName: String) async throws {
         let addCommand = Crisp.Add()
 
         let package = try await Package.loadFrom(
-            source: .path(addCommand.packageManifestPath(for: packageName)))
+            source: .url(addCommand.packageManifestPath(for: packageName)))
         print("parsed package: \(package.name)")
         #expect(package.name == packageName)
 

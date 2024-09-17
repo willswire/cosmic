@@ -1,4 +1,4 @@
-amends "Package.pkl"
+amends ".package.pkl"
 
 name = "k9s"
 
