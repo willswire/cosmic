@@ -12,6 +12,12 @@ version: String
 /// The SHA-256 hash of the binary.
 hash: String
 
+/// The path of the executable (relative to the resulting URL resource)
 executablePath: String
 
+/// Arguments to pass to the executable to validate its functionality
 testArgs: List<String>
+
+/// The resource bundle type
+typealias BundleType = "Binary"|"Archive"
+type: BundleType

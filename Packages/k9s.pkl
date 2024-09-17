@@ -11,3 +11,5 @@ hash = "916a51cc8e0c48811a1b459cfad98201ba9e0b90e5741d8a889bed718169f17d"
 executablePath = "/k9s"
 
 testArgs = List("version", "--short")
+
+type = "Archive"

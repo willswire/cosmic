@@ -34,7 +34,7 @@ extension Crisp {
         }
         
         mutating func run() async throws {
-            let package = try await fetch(packageName: package)
+            let package = try await parse(packageName: package)
             if options.verbose {
                 print("package fetched as \(package.name)")
             }
@@ -65,10 +65,10 @@ extension Crisp {
             }
         }
         
-        func fetch(packageName: String) async throws -> Package.Module {
-            let k9sPath = "/Users/willwalker/Developer/crisp/Packages/k9s.pkl"
-            let k9sPackage = try await Package.loadFrom(source: .path(k9sPath))
-            return k9sPackage
+        func parse(packageName: String) async throws -> Package.Module {
+            let manifestPath = "/Users/willwalker/Developer/crisp/Packages/\(packageName).pkl"
+            let package = try await Package.loadFrom(source: .path(manifestPath))
+            return package
         }
         
         func download(package: Package.Module) async throws -> URL {
@@ -87,12 +87,26 @@ extension Crisp {
         }
         
         func unpack(package: Package.Module, at url: URL) throws -> URL {
-            return try extract(from: url.path(), for: package.name)
+            if package.type == .archive {
+                return try extract(from: url.path(), for: package.name)
+            } else {
+                return url
+            }
         }
         
         func execute(package: Package.Module, at url: URL) throws -> Int {
+            // Set the executable bit for the file at the provided URL
+            let fileURL = url.appendingPathComponent(package.executablePath)
+            var fileAttributes = try FileManager.default.attributesOfItem(atPath: fileURL.path)
+            
+            if var permissions = fileAttributes[.posixPermissions] as? NSNumber {
+                // Add the executable permission for user, group, and others (0777)
+                permissions = NSNumber(value: permissions.intValue | 0o111)
+                try FileManager.default.setAttributes([.posixPermissions: permissions], ofItemAtPath: fileURL.path)
+            }
+            
             let process = Process()
-            process.executableURL = url.appending(component: package.executablePath)
+            process.executableURL = fileURL
             process.arguments = package.testArgs
             
             try process.run()
@@ -117,6 +131,7 @@ extension Crisp {
             }
             
             let destination = destinationDirectory.appendingPathComponent(package.name)
+            
             try fileManager.moveItem(at: url.appending(component: package.executablePath), to: destination)
             return fileManager.isExecutableFile(atPath: destination.path())
         }

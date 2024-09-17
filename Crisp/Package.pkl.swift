@@ -4,6 +4,12 @@ import PklSwift
 public enum Package {}
 
 extension Package {
+    /// The resource bundle type
+    public enum BundleType: String, CaseIterable, Decodable, Hashable {
+        case binary = "Binary"
+        case archive = "Archive"
+    }
+
     public struct Module: PklRegisteredType, Decodable, Hashable {
         public static var registeredIdentifier: String = "Package"
 
@@ -19,9 +25,13 @@ extension Package {
         /// The SHA-256 hash of the binary.
         public var hash: String
 
+        /// The path of the executable (relative to the resulting URL resource)
         public var executablePath: String
 
+        /// Arguments to pass to the executable to validate its functionality
         public var testArgs: [String]
+
+        public var type: BundleType
 
         public init(
             name: String,
@@ -29,7 +39,8 @@ extension Package {
             version: String,
             hash: String,
             executablePath: String,
-            testArgs: [String]
+            testArgs: [String],
+            type: BundleType
         ) {
             self.name = name
             self.url = url
@@ -37,6 +48,7 @@ extension Package {
             self.hash = hash
             self.executablePath = executablePath
             self.testArgs = testArgs
+            self.type = type
         }
     }
 
