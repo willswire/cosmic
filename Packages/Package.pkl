@@ -11,3 +11,7 @@ version: String
 
 /// The SHA-256 hash of the binary.
 hash: String
+
+executablePath: String
+
+testArgs: List<String>

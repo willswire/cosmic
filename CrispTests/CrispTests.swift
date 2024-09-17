@@ -29,5 +29,13 @@ struct CrispTests {
         let unpackedLocation = try add.unpack(package: package, at: location)
         print("package unpacked to: \(unpackedLocation.path)")
         #expect(unpackedLocation.isFileURL)
+        
+        let exitCode = try add.execute(package: package, at: unpackedLocation)
+        print("package exited with code: \(exitCode)")
+        #expect(exitCode == 0)
+        
+        let isInstalled = try await add.install(package: package, from: unpackedLocation)
+        print("package installed: \(isInstalled)")
+        #expect(isInstalled)
     }
 }

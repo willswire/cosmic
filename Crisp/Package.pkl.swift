@@ -19,11 +19,24 @@ extension Package {
         /// The SHA-256 hash of the binary.
         public var hash: String
 
-        public init(name: String, url: String, version: String, hash: String) {
+        public var executablePath: String
+
+        public var testArgs: [String]
+
+        public init(
+            name: String,
+            url: String,
+            version: String,
+            hash: String,
+            executablePath: String,
+            testArgs: [String]
+        ) {
             self.name = name
             self.url = url
             self.version = version
             self.hash = hash
+            self.executablePath = executablePath
+            self.testArgs = testArgs
         }
     }
 

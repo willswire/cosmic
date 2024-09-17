@@ -5,10 +5,11 @@
 //  Created by Will Walker on 9/16/24.
 //
 
-import Foundation
 import ArgumentParser
-import PklSwift
 import CryptoKit
+import Foundation
+import PklSwift
+import AppKit
 
 @main struct Crisp: AsyncParsableCommand {
     static var configuration = CommandConfiguration(
@@ -27,7 +28,10 @@ extension Crisp {
         
         @Argument(help: "The name of the package to add.") var package: String
         
-        struct Error: LocalizedError {}
+        enum AddError: Error {
+            case executeProcessFailed(String)
+            case downloadFailed(String)
+        }
         
         mutating func run() async throws {
             let package = try await fetch(packageName: package)
@@ -50,9 +54,15 @@ extension Crisp {
                 print("package unpacked: \(unpackedLocation)")
             }
             
-            // TODO: Check the unpacked binary
-            
-            // TODO: Install the unpacked binary
+            let exitCode = try execute(package: package, at: unpackedLocation)
+            if options.verbose {
+                print("\(package.name) terminated with status: \(exitCode)")
+            }
+                        
+            let installResult = try await install(package: package, from: unpackedLocation)
+            if options.verbose {
+                print("\(package.name) installed: \(installResult)")
+            }
         }
         
         func fetch(packageName: String) async throws -> Package.Module {
@@ -66,7 +76,7 @@ extension Crisp {
                 let (location, _) = try await URLSession.shared.download(from: packageURL)
                 return location
             } else {
-                throw Add.Error()
+                throw AddError.downloadFailed("Could not download package from \(package.url)")
             }
         }
         
@@ -78,6 +88,37 @@ extension Crisp {
         
         func unpack(package: Package.Module, at url: URL) throws -> URL {
             return try extract(from: url.path(), for: package.name)
+        }
+        
+        func execute(package: Package.Module, at url: URL) throws -> Int {
+            let process = Process()
+            process.executableURL = url.appending(component: package.executablePath)
+            process.arguments = package.testArgs
+            
+            try process.run()
+            process.waitUntilExit()
+            
+            if process.terminationStatus == 0 {
+                print("Extraction completed successfully!")
+            } else {
+                throw AddError.executeProcessFailed("Unexpected termination status: \(process.terminationStatus)")
+            }
+            
+            return Int(process.terminationStatus)
+        }
+        
+        func install(package: Package.Module, from url: URL) async throws -> Bool {
+            
+            let fileManager = FileManager.default
+            
+            let destinationDirectory = fileManager.homeDirectoryForCurrentUser.appendingPathComponent("Packages/")
+            if !fileManager.fileExists(atPath: destinationDirectory.path()) {
+                try fileManager.createDirectory(at: destinationDirectory, withIntermediateDirectories: true)
+            }
+            
+            let destination = destinationDirectory.appendingPathComponent(package.name)
+            try fileManager.moveItem(at: url.appending(component: package.executablePath), to: destination)
+            return fileManager.isExecutableFile(atPath: destination.path())
         }
     }
 }
