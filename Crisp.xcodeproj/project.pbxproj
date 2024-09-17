@@ -31,11 +31,12 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		6BA750932C9902B400CFB4D3 /* Exceptions for "Crisp" folder in "CrispTests" target */ = {
+		6B2021682C99375400A009C9 /* Exceptions for "Crisp" folder in "CrispTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Crisp.swift,
 				Package.pkl.swift,
+				Utils.swift,
 			);
 			target = 6BD783982C98FBFF009EEB33 /* CrispTests */;
 		};
@@ -45,7 +46,7 @@
 		6BD7838D2C98FBD4009EEB33 /* Crisp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				6BA750932C9902B400CFB4D3 /* Exceptions for "Crisp" folder in "CrispTests" target */,
+				6B2021682C99375400A009C9 /* Exceptions for "Crisp" folder in "CrispTests" target */,
 			);
 			path = Crisp;
 			sourceTree = "<group>";
@@ -357,6 +358,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QSQY64SHJ5;
 				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.crisp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -368,6 +370,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QSQY64SHJ5;
 				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.crisp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
