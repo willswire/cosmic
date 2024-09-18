@@ -38,7 +38,7 @@ jobs:
           name: TestResults
           path: TestResults.xcresult/
         if: success() || failure()
-      # - uses: kishikawakatsumi/xcresulttool@v1
-      #   with:
-      #     path: TestResults.xcresult
-      #   if: success() || failure()
+      - uses: kishikawakatsumi/xcresulttool@v1
+        with:
+          path: TestResults.xcresult
+        if: success() || failure()
