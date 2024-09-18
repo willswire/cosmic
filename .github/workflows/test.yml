@@ -1,39 +1,50 @@
+name: Test
+
 on:
   workflow_dispatch:
   pull_request:
     branches: [main]
 
+env:
+  DESTINATION: platform=macOS,arch=arm64
+  SCHEME: Cosmic
+  TEST_SCHEME: CosmicTests
+  XCODE_PATH: /Applications/Xcode_16.0.app/Contents/Developer
+  PKL_VERSION: 0.26.3
+  PKL_ARCH: macos-aarch64
+
 jobs:
   test:
-    name: test
+    name: Xcode Tests
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
+
       - name: Install pkl
         run: |
-          curl -L -o pkl 'https://github.com/apple/pkl/releases/download/0.26.3/pkl-macos-aarch64'
+          curl -L -o pkl "https://github.com/apple/pkl/releases/download/${PKL_VERSION}/pkl-${PKL_ARCH}"
           chmod +x pkl
           sudo mv pkl /usr/local/bin/pkl
           pkl --version
-      - name: Select xcode version
-        run: sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
+
+      - name: Select Xcode version
+        run: sudo xcode-select -s "${XCODE_PATH}"
+
       - uses: actions/cache@v4
         with:
-          path: ~/Library/Developer/Xcode/DerivedData/Cosmic-*/SourcePackages/
+          path: |
+            ~/Library/Developer/Xcode/DerivedData/Cosmic-*/SourcePackages/
+            ~/Library/Caches/org.swift.swiftpm/
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+
       - name: Execute build
         run: xcodebuild build -scheme "$SCHEME" -destination "$DESTINATION" CODE_SIGNING_ALLOWED='NO' | xcpretty && exit ${PIPESTATUS[0]}
-        env:
-          DESTINATION: platform=macOS,arch=arm64
-          SCHEME: Cosmic
+
       - name: Execute test
-        run: xcodebuild test -resultBundlePath TestResults -scheme "$SCHEME" -destination "$DESTINATION" CODE_SIGNING_ALLOWED='NO' | xcpretty && exit ${PIPESTATUS[0]}
-        env:
-          DESTINATION: platform=macOS,arch=arm64
-          SCHEME: CosmicTests
+        run: xcodebuild test -resultBundlePath TestResults -scheme "$TEST_SCHEME" -destination "$DESTINATION" CODE_SIGNING_ALLOWED='NO' | xcpretty && exit ${PIPESTATUS[0]}
+
       - name: Archive test results
         uses: actions/upload-artifact@v4
         with:
           name: TestResults.xcresult
           path: TestResults.xcresult/
-        if: success() || failure()
