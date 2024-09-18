@@ -10,7 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install pkl
-        run: brew install pkl
+        run: |
+          curl -L -o pkl 'https://github.com/apple/pkl/releases/download/0.26.3/pkl-macos-aarch64'
+          chmod +x pkl
+          sudo mv pkl /usr/local/bin/pkl
+          ./pkl --version
       - name: Select xcode version
         run: sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
       - uses: actions/cache@v4
