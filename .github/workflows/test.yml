@@ -1,0 +1,22 @@
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: test
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: select xcode version
+        run: sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
+      - name: execute test
+        run: xcodebuild test -resultBundlePath TestResults -scheme "$SCHEME" -destination "$DESTINATION" CODE_SIGNING_ALLOWED='NO'
+        env:
+          DESTINATION: platform=macOS,arch=arm64
+          SCHEME: CosmicTests
+      - uses: willswire/xcresulttool@main
+        with:
+          path: TestResults.xcresult
+        if: success() || failure()

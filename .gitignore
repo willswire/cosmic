@@ -1,3 +1,7 @@
+# .github/workflows/test.yml artifacts
+TestResults.xcresult
+TestResults
+
 # macOS
 .DS_Store
 
