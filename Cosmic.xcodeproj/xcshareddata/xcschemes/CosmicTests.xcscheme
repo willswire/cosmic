@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6BD783982C98FBFF009EEB33"
-               BuildableName = "CrispTests.xctest"
-               BlueprintName = "CrispTests"
-               ReferencedContainer = "container:Crisp.xcodeproj">
+               BuildableName = "CosmicTests.xctest"
+               BlueprintName = "CosmicTests"
+               ReferencedContainer = "container:Cosmic.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

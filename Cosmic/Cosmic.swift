@@ -1,6 +1,6 @@
 //
-//  Crisp.swift
-//  Crisp
+//  Cosmic.swift
+//  Cosmic
 //
 //  Created by Will Walker on 9/16/24.
 //
@@ -11,7 +11,7 @@ import CryptoKit
 import Foundation
 import PklSwift
 
-@main struct Crisp: AsyncParsableCommand {
+@main struct Cosmic: AsyncParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "A package manager for macOS.",
         subcommands: [Add.self])
@@ -21,10 +21,10 @@ import PklSwift
     }
 }
 
-extension Crisp {
+extension Cosmic {
     struct Add: AsyncParsableCommand {
         static var configuration = CommandConfiguration(abstract: "Add a package.")
-        @OptionGroup var options: Crisp.Options
+        @OptionGroup var options: Cosmic.Options
         @Argument(help: "The name of the package to add.") var package: String
         
         enum AddError: Error {
@@ -62,7 +62,7 @@ extension Crisp {
                 .appendingPathComponent("Packages/\(packageName).pkl")
 #else
             
-            guard let manifestURL = URL(string: "https://raw.githubusercontent.com/willswire/crisp/refs/heads/main/Packages/\(packageName).pkl") else {
+            guard let manifestURL = URL(string: "https://raw.githubusercontent.com/willswire/Cosmic/refs/heads/main/Packages/\(packageName).pkl") else {
                 throw AddError.manifestNotFound("Could not find a valid package manifest for \(packageName)")
             }
 #endif

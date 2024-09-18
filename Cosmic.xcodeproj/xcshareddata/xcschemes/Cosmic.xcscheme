@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6BD7838A2C98FBD4009EEB33"
-               BuildableName = "Crisp"
-               BlueprintName = "Crisp"
-               ReferencedContainer = "container:Crisp.xcodeproj">
+               BuildableName = "Cosmic"
+               BlueprintName = "Cosmic"
+               ReferencedContainer = "container:Cosmic.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -41,14 +41,23 @@
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
       viewDebuggingEnabled = "No">
+      <PreActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;rm -rf ~/Packages&#10;">
+            </ActionContent>
+         </ExecutionAction>
+      </PreActions>
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6BD7838A2C98FBD4009EEB33"
-            BuildableName = "Crisp"
-            BlueprintName = "Crisp"
-            ReferencedContainer = "container:Crisp.xcodeproj">
+            BuildableName = "Cosmic"
+            BlueprintName = "Cosmic"
+            ReferencedContainer = "container:Cosmic.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -76,9 +85,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6BD7838A2C98FBD4009EEB33"
-            BuildableName = "Crisp"
-            BlueprintName = "Crisp"
-            ReferencedContainer = "container:Crisp.xcodeproj">
+            BuildableName = "Cosmic"
+            BlueprintName = "Cosmic"
+            ReferencedContainer = "container:Cosmic.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

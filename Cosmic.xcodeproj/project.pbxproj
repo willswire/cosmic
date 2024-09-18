@@ -26,34 +26,34 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6BD7838B2C98FBD4009EEB33 /* Crisp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Crisp; sourceTree = BUILT_PRODUCTS_DIR; };
-		6BD783992C98FBFF009EEB33 /* CrispTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CrispTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6BD7838B2C98FBD4009EEB33 /* Cosmic */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Cosmic; sourceTree = BUILT_PRODUCTS_DIR; };
+		6BD783992C98FBFF009EEB33 /* CosmicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CosmicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		6B2021682C99375400A009C9 /* Exceptions for "Crisp" folder in "CrispTests" target */ = {
+		6B2021682C99375400A009C9 /* Exceptions for "Cosmic" folder in "CosmicTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Crisp.swift,
+				Cosmic.swift,
 				Package.pkl.swift,
 				Utils.swift,
 			);
-			target = 6BD783982C98FBFF009EEB33 /* CrispTests */;
+			target = 6BD783982C98FBFF009EEB33 /* CosmicTests */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6BD7838D2C98FBD4009EEB33 /* Crisp */ = {
+		6BD7838D2C98FBD4009EEB33 /* Cosmic */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				6B2021682C99375400A009C9 /* Exceptions for "Crisp" folder in "CrispTests" target */,
+				6B2021682C99375400A009C9 /* Exceptions for "Cosmic" folder in "CosmicTests" target */,
 			);
-			path = Crisp;
+			path = Cosmic;
 			sourceTree = "<group>";
 		};
-		6BD7839A2C98FBFF009EEB33 /* CrispTests */ = {
+		6BD7839A2C98FBFF009EEB33 /* CosmicTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = CrispTests;
+			path = CosmicTests;
 			sourceTree = "<group>";
 		};
 		6BD783A92C98FC87009EEB33 /* Packages */ = {
@@ -89,8 +89,8 @@
 			isa = PBXGroup;
 			children = (
 				6BD783A92C98FC87009EEB33 /* Packages */,
-				6BD7838D2C98FBD4009EEB33 /* Crisp */,
-				6BD7839A2C98FBFF009EEB33 /* CrispTests */,
+				6BD7838D2C98FBD4009EEB33 /* Cosmic */,
+				6BD7839A2C98FBFF009EEB33 /* CosmicTests */,
 				6BD783A62C98FC32009EEB33 /* Frameworks */,
 				6BD7838C2C98FBD4009EEB33 /* Products */,
 			);
@@ -99,8 +99,8 @@
 		6BD7838C2C98FBD4009EEB33 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6BD7838B2C98FBD4009EEB33 /* Crisp */,
-				6BD783992C98FBFF009EEB33 /* CrispTests.xctest */,
+				6BD7838B2C98FBD4009EEB33 /* Cosmic */,
+				6BD783992C98FBFF009EEB33 /* CosmicTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -115,9 +115,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6BD7838A2C98FBD4009EEB33 /* Crisp */ = {
+		6BD7838A2C98FBD4009EEB33 /* Cosmic */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6BD783922C98FBD4009EEB33 /* Build configuration list for PBXNativeTarget "Crisp" */;
+			buildConfigurationList = 6BD783922C98FBD4009EEB33 /* Build configuration list for PBXNativeTarget "Cosmic" */;
 			buildPhases = (
 				6BD783872C98FBD4009EEB33 /* Sources */,
 				6BD783882C98FBD4009EEB33 /* Frameworks */,
@@ -128,21 +128,21 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				6BD7838D2C98FBD4009EEB33 /* Crisp */,
+				6BD7838D2C98FBD4009EEB33 /* Cosmic */,
 				6BD783A92C98FC87009EEB33 /* Packages */,
 			);
-			name = Crisp;
+			name = Cosmic;
 			packageProductDependencies = (
 				6BD783A12C98FC1F009EEB33 /* PklSwift */,
 				6BD783A42C98FC2A009EEB33 /* ArgumentParser */,
 			);
 			productName = Crisp;
-			productReference = 6BD7838B2C98FBD4009EEB33 /* Crisp */;
+			productReference = 6BD7838B2C98FBD4009EEB33 /* Cosmic */;
 			productType = "com.apple.product-type.tool";
 		};
-		6BD783982C98FBFF009EEB33 /* CrispTests */ = {
+		6BD783982C98FBFF009EEB33 /* CosmicTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6BD7839D2C98FBFF009EEB33 /* Build configuration list for PBXNativeTarget "CrispTests" */;
+			buildConfigurationList = 6BD7839D2C98FBFF009EEB33 /* Build configuration list for PBXNativeTarget "CosmicTests" */;
 			buildPhases = (
 				6BD783952C98FBFF009EEB33 /* Sources */,
 				6BD783962C98FBFF009EEB33 /* Frameworks */,
@@ -153,15 +153,15 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				6BD7839A2C98FBFF009EEB33 /* CrispTests */,
+				6BD7839A2C98FBFF009EEB33 /* CosmicTests */,
 			);
-			name = CrispTests;
+			name = CosmicTests;
 			packageProductDependencies = (
 				6BA750562C98FF5100CFB4D3 /* PklSwift */,
 				6BA750962C9902DE00CFB4D3 /* ArgumentParser */,
 			);
 			productName = CrispTests;
-			productReference = 6BD783992C98FBFF009EEB33 /* CrispTests.xctest */;
+			productReference = 6BD783992C98FBFF009EEB33 /* CosmicTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -182,7 +182,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 6BD783862C98FBD4009EEB33 /* Build configuration list for PBXProject "Crisp" */;
+			buildConfigurationList = 6BD783862C98FBD4009EEB33 /* Build configuration list for PBXProject "Cosmic" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -200,8 +200,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6BD7838A2C98FBD4009EEB33 /* Crisp */,
-				6BD783982C98FBFF009EEB33 /* CrispTests */,
+				6BD7838A2C98FBD4009EEB33 /* Cosmic */,
+				6BD783982C98FBFF009EEB33 /* CosmicTests */,
 			);
 		};
 /* End PBXProject section */
@@ -359,7 +359,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QSQY64SHJ5;
 				ENABLE_HARDENED_RUNTIME = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.Crisp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.Cosmic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -372,7 +372,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QSQY64SHJ5;
 				ENABLE_HARDENED_RUNTIME = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.Crisp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.Cosmic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -387,7 +387,7 @@
 				DEVELOPMENT_TEAM = QSQY64SHJ5;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.CrispTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.CosmicTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -402,7 +402,7 @@
 				DEVELOPMENT_TEAM = QSQY64SHJ5;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.CrispTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.CosmicTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -412,7 +412,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6BD783862C98FBD4009EEB33 /* Build configuration list for PBXProject "Crisp" */ = {
+		6BD783862C98FBD4009EEB33 /* Build configuration list for PBXProject "Cosmic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6BD783902C98FBD4009EEB33 /* Debug */,
@@ -421,7 +421,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6BD783922C98FBD4009EEB33 /* Build configuration list for PBXNativeTarget "Crisp" */ = {
+		6BD783922C98FBD4009EEB33 /* Build configuration list for PBXNativeTarget "Cosmic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6BD783932C98FBD4009EEB33 /* Debug */,
@@ -430,7 +430,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6BD7839D2C98FBFF009EEB33 /* Build configuration list for PBXNativeTarget "CrispTests" */ = {
+		6BD7839D2C98FBFF009EEB33 /* Build configuration list for PBXNativeTarget "CosmicTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6BD7839E2C98FBFF009EEB33 /* Debug */,
