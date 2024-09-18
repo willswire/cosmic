@@ -9,6 +9,10 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
+      - name: Install pkl
+        run: |
+          brew update
+          brew install pkl
       - name: select xcode version
         run: sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
       - uses: actions/cache@v4
@@ -16,7 +20,7 @@ jobs:
           path: .build
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-spm-
+            ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
       - name: build
         run: xcodebuild build -scheme "$SCHEME" -destination "$DESTINATION" CODE_SIGNING_ALLOWED='NO'
         env:
