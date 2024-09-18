@@ -86,7 +86,14 @@ extension Cosmic {
         }
         
         func unpack(package: Package.Module, at url: URL) throws -> URL {
-            package.type == .archive ? try extract(from: url.path(), for: package.name) : url
+            switch package.type {
+            case .binary:
+                return url
+            case .zip:
+                return try unzip(from: url.path(), for: package.name)
+            case .archive:
+                return try unarchive(from: url.path(), for: package.name)
+            }
         }
         
         func execute(package: Package.Module, at url: URL) throws -> Int {

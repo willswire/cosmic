@@ -8,6 +8,7 @@ extension Package {
     public enum BundleType: String, CaseIterable, Decodable, Hashable {
         case binary = "Binary"
         case archive = "Archive"
+        case zip = "Zip"
     }
 
     public struct Module: PklRegisteredType, Decodable, Hashable {
