@@ -11,6 +11,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install pkl
         run: brew install pkl
+      - name: Select xcode version
+        run: sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
       - uses: actions/cache@v4
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Cosmic-*/SourcePackages/
