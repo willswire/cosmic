@@ -19,5 +19,5 @@ executablePath: String
 testArgs: List<String>
 
 /// The resource bundle type
-typealias BundleType = "Binary"|"Archive"
+typealias BundleType = "Binary"|"Archive"|"Zip"
 type: BundleType
