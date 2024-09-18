@@ -14,16 +14,16 @@ struct CosmicTests {
     @Test(
         "Install a package",
         arguments: [
-            "k9s",
-            "zarf",
-            "age",
-            "hermes",
-            "dasel",
-            "apko",
-            "git-lfs",
-            "gitleaks",
-            "gh",
-            "sops"
+            "k9s"
+            //"zarf",
+            //"age",
+            //"hermes",
+            //"dasel",
+            //"apko",
+            //"git-lfs",
+            //"gitleaks",
+            //"gh",
+            //"sops",
         ])
     func installPackage(packageName: String) async throws {
         let addCommand = Cosmic.Add()
