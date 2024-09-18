@@ -1,0 +1,15 @@
+amends ".package.pkl"
+
+name = "hermes"
+
+url = "https://github.com/cadensstudio/hermes/releases/download/v\(version)/hermes_v\(version)_macOS_arm64.tar.gz"
+
+version = "1.0.0"
+
+hash = "d988cd785d44c57954b8bf74162f91d4c91de6c21d877d47a557d82c4b48effb"
+
+executablePath = "/hermes"
+
+testArgs = List("help")
+
+type = "Archive"
