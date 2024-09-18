@@ -17,7 +17,12 @@ jobs:
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-
-      - name: execute test
+      - name: build
+        run: xcodebuild build -scheme "$SCHEME" -destination "$DESTINATION" CODE_SIGNING_ALLOWED='NO'
+        env:
+          DESTINATION: platform=macOS,arch=arm64
+          SCHEME: Cosmic
+      - name: test
         run: xcodebuild test -resultBundlePath TestResults -scheme "$SCHEME" -destination "$DESTINATION" CODE_SIGNING_ALLOWED='NO'
         env:
           DESTINATION: platform=macOS,arch=arm64
