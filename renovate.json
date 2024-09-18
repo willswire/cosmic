@@ -1,0 +1,20 @@
+{
+  "extends": ["config:base"],
+  "regexManagers": [
+    {
+      "fileMatch": ["^Packages/(?!(\\.))[^/]+\\.pkl$"],
+      "matchStrings": ["version = \"(?<currentValue>.*)\""],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "cosmic/{{packageName}}",
+      "packageNameTemplate": "{{depName}}",
+      "versioningTemplate": "semver",
+      "extractVersionTemplate": "v{{{version}}}"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchDatasources": ["github-releases"],
+      "rangeStrategy": "pin"
+    }
+  ]
+}
