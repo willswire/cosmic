@@ -16,7 +16,8 @@ struct CosmicTests {
         arguments: [
             "k9s",
             "zarf",
-            "age"
+            "age",
+            "hermes",
         ])
     func installPackage(packageName: String) async throws {
         let addCommand = Cosmic.Add()
