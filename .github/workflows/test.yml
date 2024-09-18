@@ -21,7 +21,11 @@ jobs:
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Cosmic-*/SourcePackages/
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          save-always: true
+      - name: Execute build
+        run: xcodebuild build -scheme "$SCHEME" -destination "$DESTINATION" CODE_SIGNING_ALLOWED='NO' | xcpretty && exit ${PIPESTATUS[0]}
+        env:
+          DESTINATION: platform=macOS,arch=arm64
+          SCHEME: Cosmic
       - name: Execute test
         run: xcodebuild test -resultBundlePath TestResults -scheme "$SCHEME" -destination "$DESTINATION" CODE_SIGNING_ALLOWED='NO' | xcpretty && exit ${PIPESTATUS[0]}
         env:
