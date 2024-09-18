@@ -18,7 +18,12 @@ struct CosmicTests {
             "zarf",
             "age",
             "hermes",
-            "dasel"
+            "dasel",
+            "apko",
+            "git-lfs",
+            "gitleaks",
+            "gh",
+            "sops"
         ])
     func installPackage(packageName: String) async throws {
         let addCommand = Cosmic.Add()

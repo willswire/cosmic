@@ -35,7 +35,7 @@ enum ExtractionError: Error {
 ///   - name: Name of the package being extracted.
 /// - Returns: URL of the extracted files' directory.
 /// - Throws: `ExtractionError` in case of issues during the extraction.
-func extract(from sourcePath: String, for name: String) throws -> URL {
+func unarchive(from sourcePath: String, for name: String) throws -> URL {
     let fileManager = FileManager.default
 
     // Check if the source file exists
@@ -61,6 +61,55 @@ func extract(from sourcePath: String, for name: String) throws -> URL {
     process.arguments = ["-xzf", sourcePath, "-C", destinationURL.path]
 
     // Execute the `tar` process and handle its result
+    do {
+        try process.run()
+        process.waitUntilExit()
+
+        guard process.terminationStatus == 0 else {
+            throw ExtractionError.extractionFailed(process.terminationStatus)
+        }
+
+        print("Extraction completed successfully!")
+        return destinationURL
+    } catch {
+        throw ExtractionError.extractionProcessFailed(
+            "Failed to run extraction process: \(error.localizedDescription)")
+    }
+}
+
+/// Extracts a compressed (zip) file to a temporary directory.
+///
+/// - Parameters:
+///   - sourcePath: Path of the compressed file.
+///   - name: Name of the package being extracted.
+/// - Returns: URL of the extracted files' directory.
+/// - Throws: `ExtractionError` in case of issues during the extraction.
+func unzip(from sourcePath: String, for name: String) throws -> URL {
+    let fileManager = FileManager.default
+
+    // Check if the source file exists
+    guard fileManager.fileExists(atPath: sourcePath) else {
+        throw ExtractionError.fileDoesNotExist("File does not exist at \(sourcePath)")
+    }
+
+    // Set up the temporary directory path for extraction
+    let destinationURL = fileManager.temporaryDirectory.appendingPathComponent(name)
+
+    // Create the destination directory
+    do {
+        try fileManager.createDirectory(
+            at: destinationURL, withIntermediateDirectories: true, attributes: nil)
+    } catch {
+        throw ExtractionError.failedToCreateDirectory(
+            "Failed to create destination directory: \(error.localizedDescription)")
+    }
+
+    // Configure the `unzip` process for extraction
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
+    process.arguments = [sourcePath, "-d", destinationURL.path]
+
+    // Execute the `unzip` process and handle its result
     do {
         try process.run()
         process.waitUntilExit()
