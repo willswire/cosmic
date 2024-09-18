@@ -10,17 +10,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install pkl
-        run: |
-          brew update
-          brew install pkl
+        run: brew install pkl
       - name: select xcode version
         run: sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
       - uses: actions/cache@v4
         with:
-          path: .build
+          path: ~/Library/Developer/Xcode/DerivedData
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
       - name: build
         run: xcodebuild build -scheme "$SCHEME" -destination "$DESTINATION" CODE_SIGNING_ALLOWED='NO'
         env:
@@ -31,7 +27,7 @@ jobs:
         env:
           DESTINATION: platform=macOS,arch=arm64
           SCHEME: CosmicTests
-      - uses: willswire/xcresulttool@main
+      - uses: kishikawakatsumi/xcresulttool@v1
         with:
           path: TestResults.xcresult
         if: success() || failure()
