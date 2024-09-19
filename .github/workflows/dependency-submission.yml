@@ -55,7 +55,7 @@ jobs:
       #       - name: Evaluate PKL files
       #         id: eval-pkl
       #         run: |
-      #           for FILE in $(find Packages -type f -name '*.pkl' ! -name '.*'); do
+      #           for FILE in $(find Packages -type f -name '*.pkl'); do
       #             pkl eval -f json $FILE > Packages/$(basename ${FILE%.pkl}.json)
       #           done
 
