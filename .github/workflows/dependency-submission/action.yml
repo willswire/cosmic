@@ -1,0 +1,14 @@
+name: "Cosmic Dependency Submission Action"
+description: "Action using the dependency-submission-toolkit"
+inputs:
+  token:
+    description: "GitHub Personal Access Token (PAT). Defaults to PAT provided by Action runner"
+    required: false
+    default: ${{ github.token }}
+  npm-package-directory:
+    description: "Cosmic package directory (directory with Cosmic *.pkl files)"
+    required: true
+    default: "Packages/"
+runs:
+  using: "node20"
+  main: ".github/workflows/dependency-submission/dist/index.js"

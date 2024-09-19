@@ -4,6 +4,8 @@ name = "sops"
 
 url = "https://github.com/getsops/sops/releases/download/v\(version)/sops-v\(version).darwin.arm64"
 
+purl = "pkg:golang/filippo.io/age@1.0.0"
+
 version = "3.9.0"
 
 hash = "72f9d59b825a20ac0019f370c18b3265608b1b0a271bc052f6007c45b95212fd"

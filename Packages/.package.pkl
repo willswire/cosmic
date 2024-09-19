@@ -6,6 +6,9 @@ name: String
 /// The pre-built binary URL of this package.
 url: String
 
+/// The package url
+purl: String
+
 /// The version of the binary.
 version: String
 

@@ -4,6 +4,8 @@ name = "gh"
 
 url = "https://github.com/cli/cli/releases/download/v\(version)/gh_\(version)_macOS_arm64.zip"
 
+purl = "pkg:golang/filippo.io/age@1.0.0"
+
 version = "2.57.0"
 
 hash = "58f90d614f557b81ff4ee09a747ab68d13793a2f306d4e0102ad8beb9ae490fb"

@@ -1,4 +1,4 @@
-# name: Submit Dependency Snapshots
+name: Submit Dependency Snapshot
 
 on:
   pull_request:
@@ -6,15 +6,43 @@ on:
 #     paths:
 #       - "Packages/*.pkl"
 
-# env:
-#   PKL_VERSION: 0.26.3
-#   PKL_ARCH: macos-aarch64
+env:
+  PKL_VERSION: 0.26.3
+  PKL_ARCH: macos-aarch64
 #   GITHUB_API_URL: https://api.github.com/repos/willswire/cosmic/dependency-graph/snapshots
+
+permissions:
+  contents: write
 
 jobs:
   submit-dependencies:
     runs-on: macos-14
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pkl
+        run: |
+          curl -L -o pkl "https://github.com/apple/pkl/releases/download/${PKL_VERSION}/pkl-${PKL_ARCH}"
+          chmod +x pkl
+          sudo mv pkl /usr/local/bin/pkl
+          pkl --version
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install NPM dependencies
+        run: npm ci --prefix .github/workflows/dependency-submission/
+
+      - name: Run all NPM build/test actions
+        run: npm run all --prefix .github/workflows/dependency-submission/
+
+      - name: Run dependency submission
+        uses: .github/workflows/dependency-submission/
+      # jobs:
+      #   submit-dependencies:
+      #     runs-on: macos-14
+      #     steps:
       #       - uses: actions/checkout@v4
 
       #       - name: Install pkl

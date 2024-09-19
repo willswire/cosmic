@@ -4,6 +4,8 @@ name = "git-lfs"
 
 url = "https://github.com/git-lfs/git-lfs/releases/download/v\(version)/git-lfs-darwin-arm64-v\(version).zip"
 
+purl = "pkg:golang/filippo.io/age@1.0.0"
+
 version = "3.5.1"
 
 hash = "1570833e5011290dff12a18416580bfed576bc797b7b521122916e09adf4622d"

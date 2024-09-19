@@ -4,6 +4,8 @@ name = "zarf"
 
 url = "https://github.com/zarf-dev/zarf/releases/download/v\(version)/zarf_v\(version)_Darwin_all"
 
+purl = "pkg:golang/filippo.io/age@1.0.0"
+
 version = "0.39.0"
 
 hash = "b70f68d05715e7368e85418bc7f78f10c51f533512f54fe33944972464ffc275"

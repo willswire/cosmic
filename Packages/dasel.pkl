@@ -4,6 +4,8 @@ name = "dasel"
 
 url = "https://github.com/TomWright/dasel/releases/download/v\(version)/dasel_darwin_arm64"
 
+purl = "pkg:golang/filippo.io/age@1.0.0"
+
 version = "2.8.1"
 
 hash = "cf976164cf5f929abe25b6924285c27db439dbcc58bac923ee0cbc921a463307"
