@@ -49,7 +49,10 @@ export function createPackageManifests(
   return cosmicPackages.map((cosmicPackage) => {
     const purl = PackageURL.fromString(cosmicPackage.purl);
     let pkg = new Package(purl);
-    let manifest = new Manifest(cosmicPackage.name);
+    let manifest = new Manifest(
+      cosmicPackage.name,
+      `Packages/${cosmicPackage.name}.pkl`,
+    );
     manifest.addDirectDependency(pkg);
     return manifest;
   });

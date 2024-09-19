@@ -1,15 +1,13 @@
 name: Submit Dependency Snapshot
 
 on:
+  workflow_dispatch:
   pull_request:
     branches: [main]
-#     paths:
-#       - "Packages/*.pkl"
 
 env:
   PKL_VERSION: 0.26.3
   PKL_ARCH: macos-aarch64
-#   GITHUB_API_URL: https://api.github.com/repos/willswire/cosmic/dependency-graph/snapshots
 
 permissions:
   contents: write
