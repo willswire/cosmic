@@ -38,7 +38,7 @@ jobs:
         run: npm run all --prefix .github/workflows/dependency-submission/
 
       - name: Run dependency submission
-        uses: .github/workflows/dependency-submission/
+        uses: ./.github/workflows/dependency-submission/
       # jobs:
       #   submit-dependencies:
       #     runs-on: macos-14
