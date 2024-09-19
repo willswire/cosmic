@@ -6,9 +6,9 @@ url = "https://github.com/derailed/k9s/releases/download/v\(version)/k9s_Darwin_
 
 purl = "pkg:golang/github.com/derailed/k9s@\(version)"
 
-version = "0.32.5"
+version = "0.26.0"
 
-hash = "916a51cc8e0c48811a1b459cfad98201ba9e0b90e5741d8a889bed718169f17d"
+hash = "43df569e527141dbfc53d859d7675b71c2cfc597ffa389a20f91297c6701f255"
 
 executablePath = "/k9s"
 

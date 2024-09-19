@@ -1,8 +1,10 @@
-name: Submit Dependency Snapshot
+name: Detect
 
 on:
   workflow_dispatch:
   pull_request:
+    branches: [main]
+  push:
     branches: [main]
 
 env:
@@ -13,8 +15,10 @@ permissions:
   contents: write
 
 jobs:
-  submit-dependencies:
+  submit_dependencies:
+    name: Submit Dependencies
     runs-on: macos-14
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
 
@@ -30,10 +34,10 @@ jobs:
           node-version: 20
 
       - name: Install NPM dependencies
-        run: npm ci --prefix .github/workflows/dependency-submission/
+        run: npm ci --prefix .github/workflows/cosmic-detector/
 
       - name: Run all NPM build/test actions
-        run: npm run all --prefix .github/workflows/dependency-submission/
+        run: npm run all --prefix .github/workflows/cosmic-detector/
 
       - name: Run dependency submission
-        uses: ./.github/workflows/dependency-submission/
+        uses: ./.github/workflows/cosmic-detector/

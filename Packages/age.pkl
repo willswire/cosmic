@@ -6,9 +6,9 @@ url = "https://github.com/FiloSottile/age/releases/download/v\(version)/age-v\(v
 
 purl = "pkg:golang/filippo.io/age@\(version)"
 
-version = "1.1.0"
+version = "1.0.0"
 
-hash = "f9dbc0726394f509e3d515a0bef5ffc02d8e59a818bfffc0f4acd826405af292"
+hash = "42aaf089081d338ba5eba508d31fe81fb68ec692f404cea996fcbb34690ec2f1"
 
 executablePath = "/age/age"
 
