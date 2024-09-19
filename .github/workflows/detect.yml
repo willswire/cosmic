@@ -13,7 +13,8 @@ permissions:
   contents: write
 
 jobs:
-  submit-dependencies:
+  submit_dependencies:
+    name: Submit Dependencies
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
