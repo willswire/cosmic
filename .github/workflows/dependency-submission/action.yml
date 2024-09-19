@@ -11,4 +11,4 @@ inputs:
     default: "Packages/"
 runs:
   using: "node20"
-  main: ".github/workflows/dependency-submission/dist/index.js"
+  main: "./dist/index.js"
