@@ -6,6 +6,11 @@ on:
     paths:
       - "Packages/*.pkl"
 
+env:
+  PKL_VERSION: 0.26.3
+  PKL_ARCH: macos-aarch64
+  GITHUB_API_URL: https://api.github.com/repos/willswire/cosmic/dependency-graph/snapshots
+
 jobs:
   submit-dependencies:
     runs-on: macos-14
@@ -19,49 +24,46 @@ jobs:
           sudo mv pkl /usr/local/bin/pkl
           pkl --version
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.x"
-
       - name: Evaluate PKL files
         id: eval-pkl
         run: |
-          mkdir -p output-json
           for FILE in $(find Packages -type f -name '*.pkl' ! -name '.*'); do
-            pkl eval -f json $FILE > output-json/$(basename ${FILE%.pkl}.json)
+            pkl eval -f json $FILE > Packages/$(basename ${FILE%.pkl}.json)
           done
 
-      - name: Submit Dependencies to GitHub
-        id: submit-dependencies
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Submit Dependency Snapshot to GitHub
         run: |
-          import json
-          import requests
-          import os
+          sha=$(git rev-parse HEAD)
+          timestamp=$(date +'%Y-%m-%dT%H:%M:%SZ')
 
-          # Function to submit dependencies
-          def submit_dependencies(dependencies, commit_sha):
-              endpoint = f"https://api.github.com/repos/${{ github.repository }}/dependency-graph/snapshots"
-              headers = {
-                  "Authorization": f"Bearer ${{ secrets.GITHUB_TOKEN }}",
-                  "Accept": "application/vnd.github.v3+json",
-                  "Content-Type": "application/json",
-              }
-              dependencies["sha"] = commit_sha
-              response = requests.post(endpoint, headers=headers, data=json.dumps(dependencies))
-
-              if response.status_code == 201:
-                  print("Dependencies submitted successfully")
-              else:
-                  print("Failed to submit dependencies:")
-                  print(response.status_code, response.text)
-
-          commit_sha = "${{ github.sha }}"
-
-          for file in os.listdir("output-json"):
-              with open(os.path.join("output-json", file)) as f:
-                  dependencies = json.load(f)
-                  submit_dependencies(dependencies, commit_sha)
-        shell: python
+          for JSON_FILE in $(find Packages -type f -name '*.json'); do
+            curl -L \
+              -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              $GITHUB_API_URL \
+              -d "{
+                \"version\": 0,
+                \"sha\": \"${sha}\",
+                \"ref\": \"refs/heads/main\",
+                \"job\": {
+                  \"correlator\": \"submit-dependencies\",
+                  \"id\": \"${{ github.run_id }}\"
+                },
+                \"detector\": {
+                  \"name\": \"pkl-detector\",
+                  \"version\": \"${PKL_VERSION}\",
+                  \"url\": \"https://github.com/apple/pkl\"
+                },
+                \"scanned\": \"${timestamp}\",
+                \"manifests\": {
+                  \"$(basename $JSON_FILE)\": {
+                    \"name\": \"$(basename $JSON_FILE)\",
+                    \"file\": {
+                      \"source_location\": \"$JSON_FILE\"
+                    }
+                  }
+                }
+              }"
+          done
