@@ -3,10 +3,12 @@
   "regexManagers": [
     {
       "fileMatch": ["^Packages/([^/.][^/]*\\.pkl)$"],
-      "matchStrings": ["version = \"(?<currentValue>.*)\""],
+      "matchStrings": [
+        "url = \"https://github.com/(?<depName>[A-Za-z0-9_.-]+)/(?<repoName>[A-Za-z0-9_.-]+)/releases/download/.*\".*version = \"(?<currentValue>.*)\""
+      ],
       "datasourceTemplate": "github-releases",
-      "depNameTemplate": "cosmic/{{packageName}}",
-      "packageNameTemplate": "{{depName}}",
+      "depNameTemplate": "{{depName}}/{{repoName}}",
+      "packageNameTemplate": "{{depName}}/{{repoName}}",
       "versioningTemplate": "semver",
       "extractVersionTemplate": "v{{{version}}}"
     }
@@ -14,6 +16,7 @@
   "packageRules": [
     {
       "matchDatasources": ["github-releases"],
+      "registryUrls": ["https://github.com/{{depName}}/{{repoName}}/releases"],
       "rangeStrategy": "pin"
     }
   ]
