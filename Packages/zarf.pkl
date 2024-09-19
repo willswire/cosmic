@@ -4,7 +4,7 @@ name = "zarf"
 
 url = "https://github.com/zarf-dev/zarf/releases/download/v\(version)/zarf_v\(version)_Darwin_all"
 
-purl = "pkg:golang/filippo.io/age@1.0.0"
+purl = "pkg:golang/github.com/zarf-dev/zarf@\(version)"
 
 version = "0.39.0"
 

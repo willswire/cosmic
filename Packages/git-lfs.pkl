@@ -4,7 +4,7 @@ name = "git-lfs"
 
 url = "https://github.com/git-lfs/git-lfs/releases/download/v\(version)/git-lfs-darwin-arm64-v\(version).zip"
 
-purl = "pkg:golang/filippo.io/age@1.0.0"
+purl = "pkg:golang/github.com/git-lfs/git-lfs/v3@\(version)"
 
 version = "3.5.1"
 

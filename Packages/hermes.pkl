@@ -4,7 +4,7 @@ name = "hermes"
 
 url = "https://github.com/cadensstudio/hermes/releases/download/v\(version)/hermes_v\(version)_macOS_arm64.tar.gz"
 
-purl = "pkg:golang/filippo.io/age@1.0.0"
+purl = "pkg:golang/github.com/cadensstudio/hermes@\(version)"
 
 version = "1.0.0"
 
