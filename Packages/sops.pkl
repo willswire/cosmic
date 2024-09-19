@@ -1,8 +1,10 @@
-amends ".package.pkl"
+amends "../Package.pkl"
 
 name = "sops"
 
 url = "https://github.com/getsops/sops/releases/download/v\(version)/sops-v\(version).darwin.arm64"
+
+purl = "pkg:golang/go.mozilla.org/sops/v3@\(version)"
 
 version = "3.9.0"
 

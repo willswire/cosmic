@@ -1,8 +1,10 @@
-amends ".package.pkl"
+amends "../Package.pkl"
 
 name = "k9s"
 
 url = "https://github.com/derailed/k9s/releases/download/v\(version)/k9s_Darwin_arm64.tar.gz"
+
+purl = "pkg:golang/github.com/derailed/k9s@\(version)"
 
 version = "0.32.5"
 

@@ -1,8 +1,10 @@
-amends ".package.pkl"
+amends "../Package.pkl"
 
 name = "git-lfs"
 
 url = "https://github.com/git-lfs/git-lfs/releases/download/v\(version)/git-lfs-darwin-arm64-v\(version).zip"
+
+purl = "pkg:golang/github.com/git-lfs/git-lfs/v3@\(version)"
 
 version = "3.5.1"
 

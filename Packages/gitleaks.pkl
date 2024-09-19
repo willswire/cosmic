@@ -1,8 +1,10 @@
-amends ".package.pkl"
+amends "../Package.pkl"
 
 name = "gitleaks"
 
 url = "https://github.com/gitleaks/gitleaks/releases/download/v\(version)/gitleaks_\(version)_darwin_arm64.tar.gz"
+
+purl = "pkg:golang/github.com/zricethezav/gitleaks/v8@\(version)"
 
 version = "8.19.2"
 

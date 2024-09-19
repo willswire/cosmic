@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "isolatedModules": true,
+    "module": "ESNext",
+    "lib": ["es2018", "dom"],
+    "moduleDetection": "force",
+    "moduleResolution": "Bundler",
+    "noEmit": true
+  },
+  "exclude": ["dist", "node_modules"],
+  "extends": "@tsconfig/strictest/tsconfig.json"
+}
