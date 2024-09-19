@@ -2,7 +2,7 @@
   "extends": ["config:base"],
   "regexManagers": [
     {
-      "fileMatch": ["^Packages/(?!(\\.))[^/]+\\.pkl$"],
+      "fileMatch": ["^Packages/([^/.][^/]*\\.pkl)$"],
       "matchStrings": ["version = \"(?<currentValue>.*)\""],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "cosmic/{{packageName}}",
