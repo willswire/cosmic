@@ -1,8 +1,10 @@
-amends ".package.pkl"
+amends "../Package.pkl"
 
 name = "gh"
 
 url = "https://github.com/cli/cli/releases/download/v\(version)/gh_\(version)_macOS_arm64.zip"
+
+purl = "pkg:golang/github.com/cli/go-gh/v2@\(version)"
 
 version = "2.57.0"
 

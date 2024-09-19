@@ -20,6 +20,9 @@ extension Package {
         /// The pre-built binary URL of this package.
         public var url: String
 
+        /// The package url
+        public var purl: String
+
         /// The version of the binary.
         public var version: String
 
@@ -37,6 +40,7 @@ extension Package {
         public init(
             name: String,
             url: String,
+            purl: String,
             version: String,
             hash: String,
             executablePath: String,
@@ -45,6 +49,7 @@ extension Package {
         ) {
             self.name = name
             self.url = url
+            self.purl = purl
             self.version = version
             self.hash = hash
             self.executablePath = executablePath

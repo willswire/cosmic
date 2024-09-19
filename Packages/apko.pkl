@@ -1,8 +1,10 @@
-amends ".package.pkl"
+amends "../Package.pkl"
 
 name = "apko"
 
 url = "https://github.com/chainguard-dev/apko/releases/download/v\(version)/apko_\(version)_darwin_arm64.tar.gz"
+
+purl = "pkg:golang/chainguard.dev/apko@\(version)"
 
 version = "0.18.1"
 
