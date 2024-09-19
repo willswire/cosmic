@@ -1,5 +1,6 @@
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
+import * as glob from "@actions/glob";
 import {
   Manifest,
   Package,
@@ -62,9 +63,14 @@ export function createPackageManifests(
 // development.
 export async function main() {
   const cosmicPackageDirectory = core.getInput("cosmic-package-directory");
+
+  const patterns = ["*.pkl"];
+  const globber = await glob.create(patterns.join("\n"));
+  const files = await globber.glob();
+
   const prodPackages = await exec.getExecOutput(
     "pkl",
-    ["eval", "-f", "json", "*.pkl"],
+    ["eval", "-f", "json", ...files],
     { cwd: cosmicPackageDirectory },
   );
   if (prodPackages.exitCode !== 0) {
