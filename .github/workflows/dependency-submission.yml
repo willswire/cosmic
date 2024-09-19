@@ -1,0 +1,67 @@
+name: Submit Dependency Snapshots
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "Packages/*.pkl"
+
+jobs:
+  submit-dependencies:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pkl
+        run: |
+          curl -L -o pkl "https://github.com/apple/pkl/releases/download/${PKL_VERSION}/pkl-${PKL_ARCH}"
+          chmod +x pkl
+          sudo mv pkl /usr/local/bin/pkl
+          pkl --version
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Evaluate PKL files
+        id: eval-pkl
+        run: |
+          mkdir -p output-json
+          for FILE in $(find Packages -type f -name '*.pkl' ! -name '.*'); do
+            pkl eval -f json $FILE > output-json/$(basename ${FILE%.pkl}.json)
+          done
+
+      - name: Submit Dependencies to GitHub
+        id: submit-dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          import json
+          import requests
+          import os
+
+          # Function to submit dependencies
+          def submit_dependencies(dependencies, commit_sha):
+              endpoint = f"https://api.github.com/repos/${{ github.repository }}/dependency-graph/snapshots"
+              headers = {
+                  "Authorization": f"Bearer ${{ secrets.GITHUB_TOKEN }}",
+                  "Accept": "application/vnd.github.v3+json",
+                  "Content-Type": "application/json",
+              }
+              dependencies["sha"] = commit_sha
+              response = requests.post(endpoint, headers=headers, data=json.dumps(dependencies))
+
+              if response.status_code == 201:
+                  print("Dependencies submitted successfully")
+              else:
+                  print("Failed to submit dependencies:")
+                  print(response.status_code, response.text)
+
+          commit_sha = "${{ github.sha }}"
+
+          for file in os.listdir("output-json"):
+              with open(os.path.join("output-json", file)) as f:
+                  dependencies = json.load(f)
+                  submit_dependencies(dependencies, commit_sha)
+        shell: python
