@@ -5,7 +5,7 @@ inputs:
     description: "GitHub Personal Access Token (PAT). Defaults to PAT provided by Action runner"
     required: false
     default: ${{ github.token }}
-  npm-package-directory:
+  cosmic-package-directory:
     description: "Cosmic package directory (directory with Cosmic *.pkl files)"
     required: true
     default: "Packages/"
