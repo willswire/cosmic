@@ -4,7 +4,7 @@ name = "age"
 
 url = "https://github.com/FiloSottile/age/releases/download/v\(version)/age-v\(version)-darwin-arm64.tar.gz"
 
-purl = "pkg:golang/filippo.io/age@1.0.0"
+purl = "pkg:golang/filippo.io/\(name)@\(version)"
 
 version = "1.1.0"
 
