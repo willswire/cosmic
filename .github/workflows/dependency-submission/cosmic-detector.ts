@@ -64,8 +64,7 @@ export function createPackageManifests(
 export async function main() {
   const cosmicPackageDirectory = core.getInput("cosmic-package-directory");
 
-  const patterns = ["*.pkl"];
-  const globber = await glob.create(patterns.join("\n"));
+  const globber = await glob.create(`${cosmicPackageDirectory}/*.pkl`);
   const files = await globber.glob();
 
   const prodPackages = await exec.getExecOutput(
