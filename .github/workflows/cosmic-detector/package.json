@@ -1,7 +1,7 @@
 {
-  "name": "dependency-submission",
+  "name": "cosmic-detector",
   "private": true,
-  "description": "[UNPUBLISHED PACKAGE!] Example using the Dependency Submission Toolkit and npm list",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "all": "npm run type-check && npm run build && npm run test",

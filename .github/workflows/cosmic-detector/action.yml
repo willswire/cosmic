@@ -1,4 +1,4 @@
-name: "Cosmic Dependency Submission Action"
+name: "Cosmic Dependency Detection Action"
 description: "Action using the dependency-submission-toolkit"
 inputs:
   token:
