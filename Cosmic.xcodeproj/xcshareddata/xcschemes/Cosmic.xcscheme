@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6BD7838A2C98FBD4009EEB33"
-               BuildableName = "Cosmic"
+               BuildableName = "cosmic"
                BlueprintName = "Cosmic"
                ReferencedContainer = "container:Cosmic.xcodeproj">
             </BuildableReference>
@@ -55,15 +55,15 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6BD7838A2C98FBD4009EEB33"
-            BuildableName = "Cosmic"
+            BuildableName = "cosmic"
             BlueprintName = "Cosmic"
             ReferencedContainer = "container:Cosmic.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "add k9s"
-            isEnabled = "NO">
+            argument = "setup --verbose"
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
       <EnvironmentVariables>
@@ -85,7 +85,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6BD7838A2C98FBD4009EEB33"
-            BuildableName = "Cosmic"
+            BuildableName = "cosmic"
             BlueprintName = "Cosmic"
             ReferencedContainer = "container:Cosmic.xcodeproj">
          </BuildableReference>

@@ -11,21 +11,26 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      shouldAutocreateTestPlan = "YES">
-      <PreActions>
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <PostActions>
          <ExecutionAction
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;rm -rf ~/Packages&#10;">
+               scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;rm -rf ~/Packages&#10;mv ~/.zshrc.*.bak ~/.zshrc&#10;">
             </ActionContent>
          </ExecutionAction>
-      </PreActions>
+      </PostActions>
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:CosmicTests/CosmicTests.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+      </TestPlans>
       <Testables>
          <TestableReference
             skipped = "NO"
-            parallelizable = "YES">
+            parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6BD783982C98FBFF009EEB33"
@@ -46,22 +51,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <PreActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;rm -rf ~/Packages&#10;">
-            </ActionContent>
-         </ExecutionAction>
-      </PreActions>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "PATH"
-            value = "/usr/local/bin"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

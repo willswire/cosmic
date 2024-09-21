@@ -75,6 +75,15 @@ jobs:
           sudo cp ./build/Cosmic.xcarchive/Products/usr/local/bin/cosmic /usr/local/bin/cosmic
           cosmic --help
 
-      - name: Run Cosmic command
+      - name: Run setup subcommand
         run: |
-          cosmic add k9s
+          cosmic setup --verbose
+          echo "$HOME/Packages" >> $GITHUB_PATH
+
+      - name: Run add subcommand
+        run: |
+          cosmic add k9s --verbose
+
+      - name: Run installed package
+        run: |
+          k9s version --short

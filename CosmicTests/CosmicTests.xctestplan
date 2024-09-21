@@ -1,0 +1,33 @@
+{
+  "configurations" : [
+    {
+      "id" : "669D9C2B-70EB-4F3A-9102-E5317F8D74FA",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "commandLineArgumentEntries" : [
+
+    ],
+    "environmentVariableEntries" : [
+      {
+        "key" : "PATH",
+        "value" : "\/usr\/local\/bin\/"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : false,
+      "target" : {
+        "containerPath" : "container:Cosmic.xcodeproj",
+        "identifier" : "6BD783982C98FBFF009EEB33",
+        "name" : "CosmicTests"
+      }
+    }
+  ],
+  "version" : 1
+}
