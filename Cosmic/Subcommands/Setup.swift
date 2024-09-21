@@ -29,6 +29,15 @@ extension Cosmic {
 
         /// Main entry point for the `setup` subcommand.
         mutating func run() async throws {
+            // Check if setup has been run before
+            let defaults = UserDefaults.standard
+            if defaults.bool(forKey: "hasRunSetup") && !options.force {
+                log("Setup has already been run. Are you sure you want to run it again?")
+                log("If so, append `--force` to the command to force setup.")
+                // You can ask the user for confirmation here or exit early if desired.
+                return
+            }
+
             // Create Packages directory if it doesn't exist
             try createPackagesDirectory()
 
@@ -42,6 +51,10 @@ extension Cosmic {
             // Add Cosmic Packages to PATH
             let isProfileModified = try modifyShellProfiles()
             log(isProfileModified ? "Profile modified." : "Unable to modify profile!")
+
+            // Mark setup as completed
+            defaults.set(true, forKey: "hasRunSetup")
+            log("Setup completed successfully.")
         }
 
         /// Creates the `Packages` directory in the user's home directory if it does not exist.

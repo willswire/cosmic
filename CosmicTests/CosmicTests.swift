@@ -15,7 +15,7 @@ struct CosmicSetupTests {
     @Test("Set up Cosmic")
     func setUpCosmic() async throws {
         var setupCommand = Cosmic.Setup()
-        setupCommand.options = try .parse(["--verbose"])
+        setupCommand.options = try .parse(["--verbose", "--force"])
 
         try setupCommand.createPackagesDirectory()
 

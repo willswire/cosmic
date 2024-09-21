@@ -18,5 +18,6 @@ import PklSwift
 
     struct Options: ParsableArguments {
         @Flag(name: [.long, .customShort("v")]) var verbose: Bool = false
+        @Flag(name: [.long, .customShort("f")]) var force: Bool = false
     }
 }
