@@ -26,7 +26,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6BD7838B2C98FBD4009EEB33 /* Cosmic */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Cosmic; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B013A312C9DF6E500C45A8C /* Package.pkl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Package.pkl; sourceTree = "<group>"; };
+		6B013A322C9DF6F500C45A8C /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		6B013A332C9DF6F500C45A8C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		6B7F6F082C9F466300031547 /* CosmicTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = CosmicTests.xctestplan; path = CosmicTests/CosmicTests.xctestplan; sourceTree = "<group>"; };
+		6BD7838B2C98FBD4009EEB33 /* cosmic */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cosmic; sourceTree = BUILT_PRODUCTS_DIR; };
 		6BD783992C98FBFF009EEB33 /* CosmicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CosmicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -34,9 +38,11 @@
 		6B2021682C99375400A009C9 /* Exceptions for "Cosmic" folder in "CosmicTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Common/Package.pkl.swift,
+				Common/Utils.swift,
 				Cosmic.swift,
-				Package.pkl.swift,
-				Utils.swift,
+				Subcommands/Add.swift,
+				Subcommands/Setup.swift,
 			);
 			target = 6BD783982C98FBFF009EEB33 /* CosmicTests */;
 		};
@@ -88,28 +94,24 @@
 		6BD783822C98FBD4009EEB33 = {
 			isa = PBXGroup;
 			children = (
+				6B7F6F082C9F466300031547 /* CosmicTests.xctestplan */,
 				6BD783A92C98FC87009EEB33 /* Packages */,
 				6BD7838D2C98FBD4009EEB33 /* Cosmic */,
 				6BD7839A2C98FBFF009EEB33 /* CosmicTests */,
-				6BD783A62C98FC32009EEB33 /* Frameworks */,
 				6BD7838C2C98FBD4009EEB33 /* Products */,
+				6B013A312C9DF6E500C45A8C /* Package.pkl */,
+				6B013A322C9DF6F500C45A8C /* LICENSE */,
+				6B013A332C9DF6F500C45A8C /* README.md */,
 			);
 			sourceTree = "<group>";
 		};
 		6BD7838C2C98FBD4009EEB33 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6BD7838B2C98FBD4009EEB33 /* Cosmic */,
+				6BD7838B2C98FBD4009EEB33 /* cosmic */,
 				6BD783992C98FBFF009EEB33 /* CosmicTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		6BD783A62C98FC32009EEB33 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,7 +139,7 @@
 				6BD783A42C98FC2A009EEB33 /* ArgumentParser */,
 			);
 			productName = Crisp;
-			productReference = 6BD7838B2C98FBD4009EEB33 /* Cosmic */;
+			productReference = 6BD7838B2C98FBD4009EEB33 /* cosmic */;
 			productType = "com.apple.product-type.tool";
 		};
 		6BD783982C98FBFF009EEB33 /* CosmicTests */ = {
@@ -361,7 +363,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.Cosmic;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = cosmic;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -375,7 +377,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.Cosmic;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = cosmic;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

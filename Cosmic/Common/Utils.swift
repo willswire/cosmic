@@ -59,6 +59,8 @@ func unarchive(from sourcePath: String, for name: String) throws -> URL {
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/usr/bin/tar")
     process.arguments = ["-xzf", sourcePath, "-C", destinationURL.path]
+    process.standardOutput = nil
+    process.standardError = nil
 
     // Execute the `tar` process and handle its result
     do {
@@ -69,7 +71,6 @@ func unarchive(from sourcePath: String, for name: String) throws -> URL {
             throw ExtractionError.extractionFailed(process.terminationStatus)
         }
 
-        print("Extraction completed successfully!")
         return destinationURL
     } catch {
         throw ExtractionError.extractionProcessFailed(
@@ -108,6 +109,8 @@ func unzip(from sourcePath: String, for name: String) throws -> URL {
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
     process.arguments = [sourcePath, "-d", destinationURL.path]
+    process.standardOutput = nil
+    process.standardError = nil
 
     // Execute the `unzip` process and handle its result
     do {
@@ -118,10 +121,18 @@ func unzip(from sourcePath: String, for name: String) throws -> URL {
             throw ExtractionError.extractionFailed(process.terminationStatus)
         }
 
-        print("Extraction completed successfully!")
         return destinationURL
     } catch {
         throw ExtractionError.extractionProcessFailed(
             "Failed to run extraction process: \(error.localizedDescription)")
+    }
+}
+
+func setExecutablePermission(for fileURL: URL) throws {
+    let attributes = try FileManager.default.attributesOfItem(atPath: fileURL.path)
+    if let permissions = attributes[.posixPermissions] as? NSNumber {
+        let newPermissions = NSNumber(value: permissions.intValue | 0o111)
+        try FileManager.default.setAttributes(
+            [.posixPermissions: newPermissions], ofItemAtPath: fileURL.path)
     }
 }
