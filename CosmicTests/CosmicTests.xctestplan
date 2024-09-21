@@ -15,7 +15,7 @@
     "environmentVariableEntries" : [
       {
         "key" : "PATH",
-        "value" : "\/usr\/local\/bin"
+        "value" : "\/usr\/local\/bin\/"
       }
     ]
   },

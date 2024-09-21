@@ -5,9 +5,9 @@
 //  Created by Will Walker on 9/16/24.
 //
 
+import ArgumentParser
 import PklSwift
 import Testing
-import ArgumentParser
 
 @testable import cosmic
 
@@ -16,14 +16,14 @@ struct CosmicSetupTests {
     func setUpCosmic() async throws {
         var setupCommand = Cosmic.Setup()
         setupCommand.options = try .parse(["--verbose"])
-        
+
         try setupCommand.createPackagesDirectory()
-        
+
         let pklURL = try await setupCommand.downloadPkl()
         #expect(pklURL.isFileURL)
-        
+
         try setupCommand.installPkl(from: pklURL)
-        
+
         let isProfileModified = try setupCommand.modifyShellProfiles()
         // TODO: Test against output (which instructs users to self modify)
         #expect(isProfileModified || true)
@@ -48,7 +48,7 @@ struct CosmicAddTests {
     func installPackage(packageName: String) async throws {
         var addCommand = Cosmic.Add()
         addCommand.options = try .parse(["--verbose"])
-        
+
         let package = try await Package.loadFrom(
             source: .url(addCommand.packageManifestPath(for: packageName)))
         #expect(package.name == packageName)
