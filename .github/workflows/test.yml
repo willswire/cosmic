@@ -77,11 +77,12 @@ jobs:
 
       - name: Run setup subcommand
         run: |
-          cosmic setup
+          cosmic setup --verbose
+          echo "$HOME/Packages" >> $GITHUB_PATH
 
       - name: Run add subcommand
         run: |
-          cosmic add k9s
+          cosmic add k9s --verbose
 
       - name: Run installed package
         run: |
