@@ -45,24 +45,15 @@ extension Cosmic {
         }
 
         func packageManifestPath(for packageName: String) throws -> URL {
-            #if DEBUG
-                let manifestURL = URL(fileURLWithPath: #file)
-                    .deletingLastPathComponent()
-                    .deletingLastPathComponent()
-                    .deletingLastPathComponent()
-                    .appendingPathComponent("Packages/\(packageName).pkl")
-            #else
-
-                guard
-                    let manifestURL = URL(
-                        string:
-                            "https://raw.githubusercontent.com/willswire/cosmic/refs/heads/main/Packages/\(packageName).pkl"
-                    )
-                else {
-                    throw AddError.manifestNotFound(
-                        "Could not find a valid package manifest for \(packageName)")
-                }
-            #endif
+            guard
+                let manifestURL = URL(
+                    string:
+                        "https://raw.githubusercontent.com/willswire/cosmic-pkgs/refs/heads/main/\(packageName).pkl"
+                )
+            else {
+                throw AddError.manifestNotFound(
+                    "Could not find a valid package manifest for \(packageName)")
+            }
             return manifestURL
         }
 

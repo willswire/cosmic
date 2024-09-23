@@ -2,7 +2,6 @@
 build/
 TestResults.xcresult
 TestResults
-Packages/*.json
 
 # macOS
 .DS_Store
