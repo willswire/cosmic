@@ -1,18 +1,11 @@
 name: Release
 
 on:
-  workflow_dispatch:
+  pull_request:
+    branches: [main]
   push:
     tags:
       - "v*"
-
-env:
-  DESTINATION: platform=macOS,arch=arm64
-  SCHEME: Cosmic
-  XCODE_PATH: /Applications/Xcode_16.0.app/Contents/Developer
-  PKL_VERSION: 0.26.3
-  PKL_ARCH: macos-aarch64
-  ARCHIVE: cosmic.xcarchive
 
 jobs:
   build_with_signing:
@@ -58,33 +51,47 @@ jobs:
           chmod +x pkl
           sudo mv pkl /usr/local/bin/pkl
           pkl --version
+        env:
+          PKL_VERSION: 0.26.3
+          PKL_ARCH: macos-aarch64
 
       - name: Select Xcode version
         run: sudo xcode-select -s "${XCODE_PATH}"
+        env:
+          XCODE_PATH: /Applications/Xcode_16.0.app/Contents/Developer
 
       - name: Archive
-        run: xcodebuild archive -scheme "$SCHEME" -destination "$DESTINATION" -archivePath "$ARCHIVE" PROVISIONING_PROFILE="~/Library/MobileDevice/Provisioning\ Profiles/build_pp.provisionprofile" | xcpretty && exit ${PIPESTATUS[0]}
-
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
+        run: xcodebuild archive -scheme "$SCHEME" -destination "$DESTINATION" -archivePath "$ARCHIVE"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-
-      - name: Mark binary as executable
-        run: chmod +x ./cosmic.xcarchive/Products/usr/local/bin/cosmic
+          PROVISIONING_PROFILE: "~/Library/MobileDevice/Provisioning\ Profiles/build_pp.provisionprofile"
+          CODE_SIGN_IDENTITY: "Apple Development: William Walker (William Walker)"
+          DESTINATION: platform=macOS,arch=arm64
+          SCHEME: Cosmic
+          ARCHIVE: cosmic.xcarchive
 
       - name: Upload binary
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./cosmic.xcarchive/Products/usr/local/bin/cosmic
-          asset_name: cosmic
-          asset_content_type: application/octet-stream
+          name: cosmic
+          path: cosmic.xcarchive/Products/usr/local/bin/cosmic
+
+      # - name: Create release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ github.ref }}
+      #     release_name: Release ${{ github.ref }}
+      #     draft: false
+      #     prerelease: false
+
+      # - name: Upload binary
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ./cosmic.xcarchive/Products/usr/local/bin/cosmic
+      #     asset_name: cosmic
+      #     asset_content_type: application/octet-stream
