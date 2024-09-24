@@ -61,10 +61,9 @@ jobs:
           XCODE_PATH: /Applications/Xcode_16.0.app/Contents/Developer
 
       - name: Archive
-        run: xcodebuild archive -scheme "$SCHEME" -destination "$DESTINATION" -archivePath "$ARCHIVE"
+        run: xcrun xcodebuild clean archive -scheme "$SCHEME" -destination "$DESTINATION" -archivePath "$ARCHIVE"
         env:
           PROVISIONING_PROFILE: "~/Library/MobileDevice/Provisioning\ Profiles/build_pp.provisionprofile"
-          CODE_SIGN_IDENTITY: "Apple Development: William Walker (William Walker)"
           DESTINATION: platform=macOS,arch=arm64
           SCHEME: Cosmic
           ARCHIVE: cosmic.xcarchive

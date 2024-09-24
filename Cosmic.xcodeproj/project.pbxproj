@@ -26,7 +26,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6B013A312C9DF6E500C45A8C /* Package.pkl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Package.pkl; sourceTree = "<group>"; };
 		6B013A322C9DF6F500C45A8C /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		6B013A332C9DF6F500C45A8C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		6B7F6F082C9F466300031547 /* CosmicTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = CosmicTests.xctestplan; path = CosmicTests/CosmicTests.xctestplan; sourceTree = "<group>"; };
@@ -62,11 +61,6 @@
 			path = CosmicTests;
 			sourceTree = "<group>";
 		};
-		6BD783A92C98FC87009EEB33 /* Packages */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Packages;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,11 +89,9 @@
 			isa = PBXGroup;
 			children = (
 				6B7F6F082C9F466300031547 /* CosmicTests.xctestplan */,
-				6BD783A92C98FC87009EEB33 /* Packages */,
 				6BD7838D2C98FBD4009EEB33 /* Cosmic */,
 				6BD7839A2C98FBFF009EEB33 /* CosmicTests */,
 				6BD7838C2C98FBD4009EEB33 /* Products */,
-				6B013A312C9DF6E500C45A8C /* Package.pkl */,
 				6B013A322C9DF6F500C45A8C /* LICENSE */,
 				6B013A332C9DF6F500C45A8C /* README.md */,
 			);
@@ -131,7 +123,6 @@
 			);
 			fileSystemSynchronizedGroups = (
 				6BD7838D2C98FBD4009EEB33 /* Cosmic */,
-				6BD783A92C98FC87009EEB33 /* Packages */,
 			);
 			name = Cosmic;
 			packageProductDependencies = (
@@ -357,6 +348,8 @@
 		6BD783932C98FBD4009EEB33 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QSQY64SHJ5;
@@ -364,6 +357,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.Cosmic;
 				PRODUCT_NAME = cosmic;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -371,6 +365,8 @@
 		6BD783942C98FBD4009EEB33 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QSQY64SHJ5;
@@ -378,6 +374,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.willswire.Cosmic;
 				PRODUCT_NAME = cosmic;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
