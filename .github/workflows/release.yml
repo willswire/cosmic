@@ -22,26 +22,19 @@ jobs:
           BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         run: |
-          # create variables
           CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
           PP_PATH=$RUNNER_TEMP/build_pp.provisionprofile
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
 
-          # import certificate and provisioning profile from secrets
           echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
           echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
 
-          # create temporary keychain
           security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-
-          # import certificate to keychain
           security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
-
-          # apply provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
@@ -66,13 +59,43 @@ jobs:
           PROVISIONING_PROFILE: "~/Library/MobileDevice/Provisioning\ Profiles/build_pp.provisionprofile"
           DESTINATION: platform=macOS,arch=arm64
           SCHEME: Cosmic
-          ARCHIVE: cosmic.xcarchive
+          ARCHIVE: Cosmic.xcarchive
 
-      - name: Upload binary
+      - name: Build installer package
+        run: |
+          pkgbuild --root "Cosmic.xcarchive/Products" \
+            --identifier "com.willswire.Cosmic" \
+            --version "0.0.1" \
+            --install-location "/" \
+            --sign="$PKG_SIGN_ID" \
+            cosmic.pkg
+        env:
+          PKG_SIGN_ID: ${{ secrets.PKG_SIGN_ID }}
+
+      - name: Notarize package
+        run: |
+          APP_STORE_CONNECT_KEY_PATH=$RUNNER_TEMP/key.p8
+
+          echo -n "$APP_STORE_CONNECT_KEY" | base64 --decode -o $APP_STORE_CONNECT_KEY_PATH
+
+          xcrun notarytool submit cosmic.pkg \
+            --key="$APP_STORE_CONNECT_KEY_PATH" \
+            --key-id="$APP_STORE_CONNECT_KEY_ID" \
+            --issuer="$APP_STORE_CONNECT_ISSUER" \
+            --wait
+        env:
+          PKG_SIGN_ID: ${{ secrets.PKG_SIGN_ID }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER }}
+
+      - name: Staple notarization
+        run: xcrun stapler staple cosmic.pkg
+
+      - name: Upload package
         uses: actions/upload-artifact@v4
         with:
-          name: cosmic
-          path: cosmic.xcarchive/Products/usr/local/bin/cosmic
+          name: cosmic.pkg
+          path: cosmic.pkg
 
       # - name: Create release
       #   id: create_release
@@ -91,6 +114,6 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #   with:
       #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./cosmic.xcarchive/Products/usr/local/bin/cosmic
-      #     asset_name: cosmic
-      #     asset_content_type: application/octet-stream
+      #     asset_path: ./cosmic.zip
+      #     asset_name: cosmic.zip
+      #     asset_content_type: application/zip
