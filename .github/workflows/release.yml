@@ -72,7 +72,7 @@ jobs:
             --identifier "com.willswire.Cosmic" \
             --version "0.0.1" \
             --install-location "/" \
-            --sign="Mac Developer ID Installer: William Walker" \
+            --sign="Developer ID Installer: William Walker (QSQY64SHJ5)" \
             cosmic.pkg
 
       - name: Notarize package
@@ -87,7 +87,7 @@ jobs:
             --issuer="$APP_STORE_CONNECT_ISSUER" \
             --wait
         env:
-          APP_STORE_CONNECT_KEY: $
+          APP_STORE_CONNECT_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_KEY_BASE64 }}
           APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER }}
 
