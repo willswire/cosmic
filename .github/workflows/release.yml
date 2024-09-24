@@ -1,8 +1,6 @@
 name: Release
 
 on:
-  pull_request:
-    branches: [main]
   push:
     tags:
       - "v*"
@@ -61,7 +59,6 @@ jobs:
         run: xcrun xcodebuild clean archive -scheme "$SCHEME" -destination "$DESTINATION" -archivePath "$ARCHIVE"
         env:
           PROVISIONING_PROFILE: "~/Library/MobileDevice/Provisioning\ Profiles/build_pp.provisionprofile"
-          CODE_SIGN_IDENTITY: "Mac Developer ID Application: William Walker"
           DESTINATION: platform=macOS,arch=arm64
           SCHEME: Cosmic
           ARCHIVE: Cosmic.xcarchive
@@ -70,7 +67,7 @@ jobs:
         run: |
           pkgbuild --root "Cosmic.xcarchive/Products" \
             --identifier "com.willswire.Cosmic" \
-            --version "0.0.1" \
+            --version "${{ github.ref }}" \
             --install-location "/" \
             --sign="Developer ID Installer: William Walker (QSQY64SHJ5)" \
             cosmic.pkg
@@ -94,29 +91,23 @@ jobs:
       - name: Staple notarization
         run: xcrun stapler staple cosmic.pkg
 
-      - name: Upload package
-        uses: actions/upload-artifact@v4
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: cosmic.pkg
-          path: cosmic.pkg
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
 
-      # - name: Create release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      #     draft: false
-      #     prerelease: false
-
-      # - name: Upload binary
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./cosmic.zip
-      #     asset_name: cosmic.zip
-      #     asset_content_type: application/zip
+      - name: Upload binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./cosmic.pkg
+          asset_name: cosmic.pkg
+          asset_content_type: application/zip
