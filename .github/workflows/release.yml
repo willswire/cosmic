@@ -42,64 +42,63 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
-      # - name: Install pkl
-      #   run: |
-      #     curl -L -o pkl "https://github.com/apple/pkl/releases/download/${PKL_VERSION}/pkl-${PKL_ARCH}"
-      #     chmod +x pkl
-      #     sudo mv pkl /usr/local/bin/pkl
-      #     pkl --version
-      #   env:
-      #     PKL_VERSION: 0.26.3
-      #     PKL_ARCH: macos-aarch64
+      - name: Install pkl
+        run: |
+          curl -L -o pkl "https://github.com/apple/pkl/releases/download/${PKL_VERSION}/pkl-${PKL_ARCH}"
+          chmod +x pkl
+          sudo mv pkl /usr/local/bin/pkl
+          pkl --version
+        env:
+          PKL_VERSION: 0.26.3
+          PKL_ARCH: macos-aarch64
 
-      # - name: Select Xcode version
-      #   run: sudo xcode-select -s "${XCODE_PATH}"
-      #   env:
-      #     XCODE_PATH: /Applications/Xcode_16.0.app/Contents/Developer
+      - name: Select Xcode version
+        run: sudo xcode-select -s "${XCODE_PATH}"
+        env:
+          XCODE_PATH: /Applications/Xcode_16.0.app/Contents/Developer
 
-      # - name: Archive
-      #   run: xcrun xcodebuild clean archive -scheme "$SCHEME" -destination "$DESTINATION" -archivePath "$ARCHIVE"
-      #   env:
-      #     PROVISIONING_PROFILE: "~/Library/MobileDevice/Provisioning\ Profiles/build_pp.provisionprofile"
-      #     DESTINATION: platform=macOS,arch=arm64
-      #     SCHEME: Cosmic
-      #     ARCHIVE: Cosmic.xcarchive
+      - name: Archive
+        run: xcrun xcodebuild clean archive -scheme "$SCHEME" -destination "$DESTINATION" -archivePath "$ARCHIVE"
+        env:
+          PROVISIONING_PROFILE: "~/Library/MobileDevice/Provisioning\ Profiles/build_pp.provisionprofile"
+          CODE_SIGN_IDENTITY: "Mac Developer ID Application: William Walker"
+          DESTINATION: platform=macOS,arch=arm64
+          SCHEME: Cosmic
+          ARCHIVE: Cosmic.xcarchive
 
-      # - name: Build installer package
-      #   run: |
-      #     pkgbuild --root "Cosmic.xcarchive/Products" \
-      #       --identifier "com.willswire.Cosmic" \
-      #       --version "0.0.1" \
-      #       --install-location "/" \
-      #       --sign="$PKG_SIGN_ID" \
-      #       cosmic.pkg
-      #   env:
-      #     PKG_SIGN_ID: ${{ secrets.PKG_SIGN_ID }}
+      - name: Build installer package
+        run: |
+          pkgbuild --root "Cosmic.xcarchive/Products" \
+            --identifier "com.willswire.Cosmic" \
+            --version "0.0.1" \
+            --install-location "/" \
+            --sign="Mac Developer ID Installer: William Walker" \
+            cosmic.pkg
 
-      # - name: Notarize package
-      #   run: |
-      #     APP_STORE_CONNECT_KEY_PATH=$RUNNER_TEMP/key.p8
+      - name: Notarize package
+        run: |
+          APP_STORE_CONNECT_KEY_PATH=$RUNNER_TEMP/key.p8
 
-      #     echo -n "$APP_STORE_CONNECT_KEY" | base64 --decode -o $APP_STORE_CONNECT_KEY_PATH
+          echo -n "$APP_STORE_CONNECT_KEY_BASE64" | base64 --decode -o $APP_STORE_CONNECT_KEY_PATH
 
-      #     xcrun notarytool submit cosmic.pkg \
-      #       --key="$APP_STORE_CONNECT_KEY_PATH" \
-      #       --key-id="$APP_STORE_CONNECT_KEY_ID" \
-      #       --issuer="$APP_STORE_CONNECT_ISSUER" \
-      #       --wait
-      #   env:
-      #     PKG_SIGN_ID: ${{ secrets.PKG_SIGN_ID }}
-      #     APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
-      #     APP_STORE_CONNECT_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER }}
+          xcrun notarytool submit cosmic.pkg \
+            --key="$APP_STORE_CONNECT_KEY_PATH" \
+            --key-id="$APP_STORE_CONNECT_KEY_ID" \
+            --issuer="$APP_STORE_CONNECT_ISSUER" \
+            --wait
+        env:
+          APP_STORE_CONNECT_KEY: $
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER }}
 
-      # - name: Staple notarization
-      #   run: xcrun stapler staple cosmic.pkg
+      - name: Staple notarization
+        run: xcrun stapler staple cosmic.pkg
 
-      # - name: Upload package
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: cosmic.pkg
-      #     path: cosmic.pkg
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: cosmic.pkg
+          path: cosmic.pkg
 
       # - name: Create release
       #   id: create_release
