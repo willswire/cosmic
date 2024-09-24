@@ -31,7 +31,7 @@ jobs:
         run: |
           # create variables
           CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          PP_PATH=$RUNNER_TEMP/build_pp.provisionprofile
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
 
           # import certificate and provisioning profile from secrets
@@ -63,7 +63,7 @@ jobs:
         run: sudo xcode-select -s "${XCODE_PATH}"
 
       - name: Archive
-        run: xcodebuild archive -scheme "$SCHEME" -destination "$DESTINATION" -archivePath "$ARCHIVE" | xcpretty && exit ${PIPESTATUS[0]}
+        run: xcodebuild archive -scheme "$SCHEME" -destination "$DESTINATION" -archivePath "$ARCHIVE" PROVISIONING_PROFILE="~/Library/MobileDevice/Provisioning\ Profiles/build_pp.provisionprofile" | xcpretty && exit ${PIPESTATUS[0]}
 
       - name: Create release
         id: create_release
@@ -75,6 +75,9 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
+
+      - name: Mark binary as executable
+        run: chmod +x ./cosmic.xcarchive/Products/usr/local/bin/cosmic
 
       - name: Upload binary
         uses: actions/upload-release-asset@v1
