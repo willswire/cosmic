@@ -48,7 +48,7 @@ extension Cosmic {
             guard
                 let manifestURL = URL(
                     string:
-                        "https://raw.githubusercontent.com/willswire/cosmic-pkgs/refs/heads/main/\(packageName).pkl"
+                        "https://raw.githubusercontent.com/willswire/cosmic-pkgs/refs/tags/v0.0.1/\(packageName).pkl"
                 )
             else {
                 throw AddError.manifestNotFound(
