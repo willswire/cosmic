@@ -21,6 +21,7 @@ extension Cosmic {
             case manifestNotFound(String)
             case executeProcessFailed(String)
             case downloadFailed(String)
+            case missingExecutablePath(String)
         }
 
         mutating func run() async throws {
@@ -48,7 +49,7 @@ extension Cosmic {
             guard
                 let manifestURL = URL(
                     string:
-                        "https://raw.githubusercontent.com/willswire/cosmic-pkgs/refs/tags/v0.0.1/\(packageName).pkl"
+                        "https://raw.githubusercontent.com/willswire/cosmic-pkgs/refs/heads/add-bundle-packages/\(packageName).pkl"
                 )
             else {
                 throw AddError.manifestNotFound(
@@ -61,7 +62,7 @@ extension Cosmic {
             guard let packageURL = URL(string: package.url) else {
                 throw AddError.downloadFailed("Could not download package from \(package.url)")
             }
-            let (location, _) = try await URLSession.shared.download(from: packageURL)
+            let (location, _) = try await sharedSession.download(from: packageURL)
             return location
         }
 
@@ -80,30 +81,42 @@ extension Cosmic {
             case .zip:
                 return try unzip(from: url.path(), for: package.name)
             case .archive:
-                return try unarchive(from: url.path(), for: package.name)
+                return try unarchive(from: url.path(), for: package.name, strip: package.isBundle)
             }
         }
 
         func execute(package: Package.Module, at url: URL) throws -> Int {
-            let fileURL = url.appendingPathComponent(package.executablePath)
-
-            try setExecutablePermission(for: fileURL)
-
-            let process = Process()
-            process.executableURL = fileURL
-            process.arguments = package.testArgs
-            process.standardOutput = nil
-            process.standardError = nil
-
-            try process.run()
-            process.waitUntilExit()
-
-            guard process.terminationStatus == 0 else {
-                throw AddError.executeProcessFailed(
-                    "Unexpected termination status: \(process.terminationStatus)")
+            var terminationStatusProduct: Int = 0
+            
+            for executablePath in package.executablePaths {
+                
+                let fileURL = url.appendingPathComponent(executablePath)
+                
+                try setExecutablePermission(for: fileURL)
+                
+                let process = Process()
+                
+                if package.type != .binary {
+                    process.currentDirectoryURL = url
+                }
+                
+                process.executableURL = fileURL
+                process.arguments = package.testArgs
+                process.standardOutput = nil
+                process.standardError = nil
+                
+                try process.run()
+                process.waitUntilExit()
+                
+                terminationStatusProduct *= Int(process.terminationStatus)
             }
 
-            return Int(process.terminationStatus)
+            guard terminationStatusProduct == 0 else {
+                throw AddError.executeProcessFailed(
+                    "No succesful executables were found")
+            }
+            
+            return terminationStatusProduct
         }
 
         func install(package: Package.Module, from url: URL) async throws -> Bool {
@@ -112,11 +125,33 @@ extension Cosmic {
             if !fm.fileExists(atPath: homePackagesPath.path) {
                 try fm.createDirectory(at: homePackagesPath, withIntermediateDirectories: true)
             }
-
-            let destination = homePackagesPath.appendingPathComponent(package.name)
-            try fm.moveItem(at: url.appendingPathComponent(package.executablePath), to: destination)
-
-            return fm.isExecutableFile(atPath: destination.path)
+                        
+            if package.isBundle {
+                let destination = homePackagesPath.appendingPathComponent("_" + package.name)
+                
+                try fm.moveItem(at: url, to: destination)
+                
+                for path in package.executablePaths {
+                    guard let executable = path.split(separator: "/").last else {
+                        throw AddError.missingExecutablePath(destination.path())
+                    }
+                    try fm.createSymbolicLink(at: homePackagesPath.appendingPathComponent(String(executable)), withDestinationURL: destination.appending(path: path))
+                }
+                
+            } else {
+                let destination = homePackagesPath.appendingPathComponent(package.name)
+                
+                guard let primaryExecutablePath = package.executablePaths.first else {
+                    throw AddError.missingExecutablePath(destination.path())
+                }
+                
+                try fm.moveItem(at: url.appendingPathComponent(primaryExecutablePath), to: destination)
+            }
+            
+            return package.executablePaths.reduce(true) { partialResult, next in
+                let executable = String(next.split(separator: "/").last ?? "")
+                return partialResult && fm.isExecutableFile(atPath: homePackagesPath.appendingPathComponent(executable).path)
+            }
         }
 
         func log(_ message: String) {
