@@ -83,7 +83,7 @@ extension Cosmic {
             }
 
             do {
-                let (location, _) = try await URLSession.shared.download(from: url)
+                let (location, _) = try await sharedSession.download(from: url)
                 return location
             } catch {
                 throw SetupError.downloadFailed(

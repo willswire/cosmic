@@ -34,16 +34,22 @@ struct CosmicAddTests {
     @Test(
         "Install a package",
         arguments: [
-            "k9s"
-            //"zarf",
-            //"age",
-            //"hermes",
-            //"dasel",
-            //"apko",
+            // Non-bundled packages
+            "node",
+            "go",
+            "libwebp",
+            // Bundled packages
+            "age",
+            "apko",
+            "dasel",
+            //"gh",
             //"git-lfs",
             //"gitleaks",
-            //"gh",
+            //"goreleaser",
+            //"hermes",
+            //"k9s",
             //"sops",
+            //"zarf",
         ])
     func installPackage(packageName: String) async throws {
         var addCommand = Cosmic.Add()

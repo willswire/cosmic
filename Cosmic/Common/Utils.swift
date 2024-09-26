@@ -8,6 +8,13 @@
 import CryptoKit
 import Foundation
 
+/// Shared, configured URL Session
+let sharedSession: URLSession = {
+    let configuration = URLSessionConfiguration.default
+    configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+    return URLSession(configuration: configuration)
+}()
+
 /// Extension providing utility properties to `Digest`.
 extension Digest {
     /// Array of bytes representing the digest.
@@ -35,7 +42,7 @@ enum ExtractionError: Error {
 ///   - name: Name of the package being extracted.
 /// - Returns: URL of the extracted files' directory.
 /// - Throws: `ExtractionError` in case of issues during the extraction.
-func unarchive(from sourcePath: String, for name: String) throws -> URL {
+func unarchive(from sourcePath: String, for name: String, strip: Bool) throws -> URL {
     let fileManager = FileManager.default
 
     // Check if the source file exists
@@ -59,6 +66,11 @@ func unarchive(from sourcePath: String, for name: String) throws -> URL {
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/usr/bin/tar")
     process.arguments = ["-xzf", sourcePath, "-C", destinationURL.path]
+    
+    if strip {
+        process.arguments?.append("--strip-components=1")
+    }
+    
     process.standardOutput = nil
     process.standardError = nil
 

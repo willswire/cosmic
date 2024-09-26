@@ -4,8 +4,8 @@ import PklSwift
 public enum Package {}
 
 extension Package {
-    /// The resource bundle type
-    public enum BundleType: String, CaseIterable, Decodable, Hashable {
+    /// The distribution type
+    public enum DistributionType: String, CaseIterable, Decodable, Hashable {
         case binary = "Binary"
         case archive = "Archive"
         case zip = "Zip"
@@ -30,12 +30,15 @@ extension Package {
         public var hash: String
 
         /// The path of the executable (relative to the resulting URL resource)
-        public var executablePath: String
+        public var executablePaths: [String]
 
         /// Arguments to pass to the executable to validate its functionality
         public var testArgs: [String]
 
-        public var type: BundleType
+        public var type: DistributionType
+
+        /// Indicate if the package contains more than a single executable
+        public var isBundle: Bool
 
         public init(
             name: String,
@@ -43,18 +46,20 @@ extension Package {
             purl: String,
             version: String,
             hash: String,
-            executablePath: String,
+            executablePaths: [String],
             testArgs: [String],
-            type: BundleType
+            type: DistributionType,
+            isBundle: Bool
         ) {
             self.name = name
             self.url = url
             self.purl = purl
             self.version = version
             self.hash = hash
-            self.executablePath = executablePath
+            self.executablePaths = executablePaths
             self.testArgs = testArgs
             self.type = type
+            self.isBundle = isBundle
         }
     }
 
