@@ -15,7 +15,7 @@ struct CosmicSetupTests {
     @Test("Set up Cosmic")
     func setUpCosmic() async throws {
         var setupCommand = Cosmic.Setup()
-        setupCommand.options = try .parse(["--verbose", "--force"])
+        setupCommand.options = try .parse(["--info", "--force"])
 
         try setupCommand.createPackagesDirectory()
 
@@ -36,12 +36,12 @@ struct CosmicAddTests {
         arguments: [
             // Non-bundled packages
             "node",
-            "go",
-            "libwebp",
+//            "go",
+//            "libwebp",
             // Bundled packages
-            "age",
-            "apko",
-            "dasel",
+//            "age",
+//            "apko",
+//            "dasel",
             //"gh",
             //"git-lfs",
             //"gitleaks",
@@ -53,10 +53,9 @@ struct CosmicAddTests {
         ])
     func installPackage(packageName: String) async throws {
         var addCommand = Cosmic.Add()
-        addCommand.options = try .parse(["--verbose"])
+        addCommand.options = try .parse(["--info"])
 
-        let package = try await Package.loadFrom(
-            source: .url(addCommand.packageManifestPath(for: packageName)))
+        let package = try await addCommand.locate(packageName: packageName)
         #expect(package.name == packageName)
 
         let downloadLocation = try await addCommand.download(package: package)

@@ -15,9 +15,16 @@ import PklSwift
     static var configuration = CommandConfiguration(
         abstract: "A package manager for macOS.",
         subcommands: [Setup.self, Add.self])
+    
+    enum LogLevel: EnumerableFlag {
+        case debug
+        case info
+        case warning
+        case error
+    }
 
     struct Options: ParsableArguments {
-        @Flag(name: [.long, .customShort("v")]) var verbose: Bool = false
-        @Flag(name: [.long, .customShort("f")]) var force: Bool = false
+        @Flag var logLevel: LogLevel = .info
+        @Flag var force: Bool = false
     }
 }
