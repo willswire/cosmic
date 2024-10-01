@@ -14,7 +14,7 @@ import PklSwift
 @main struct Cosmic: AsyncParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "A package manager for macOS.",
-        subcommands: [Setup.self, Add.self])
+        subcommands: [Add.self])
 
     struct Options: ParsableArguments {
         @Flag var verbose: Bool = false

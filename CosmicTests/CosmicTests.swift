@@ -12,26 +12,6 @@ import Testing
 
 @testable import cosmic
 
-struct CosmicSetupTests {
-    @Test("Set up Cosmic")
-    func setUpCosmic() async throws {
-        var setupCommand = Cosmic.Setup()
-        setupCommand.options = try .parse(["--verbose"])
-        setupCommand.force = true
-
-        try setupCommand.createPackagesDirectory()
-
-        let pklURL = try await setupCommand.downloadPkl()
-        #expect(pklURL.isFileURL)
-
-        try setupCommand.installPkl(from: pklURL)
-
-        let isProfileModified = try setupCommand.modifyShellProfiles()
-        // TODO: Test against output (which instructs users to self modify)
-        #expect(isProfileModified || true)
-    }
-}
-
 struct CosmicAddTests {
     
     var cmd: Cosmic.Add
@@ -41,14 +21,18 @@ struct CosmicAddTests {
         cmd.options = try! .parse(["--verbose"])
     }
     
-    @Test("Full run test", arguments: [
+    @Test("Add integration test", arguments: [
         "k9s",
         "go"
     ])
-    mutating func testRun(_ packageName: String) async {
+    func testRun(_ packageName: String) async {
+        var localCmd = Cosmic.Add()
+        localCmd.options = try! .parse(["--verbose"])
+        localCmd.packageName = packageName
+        
         await #expect(throws: Never.self) {
-            cmd.packageName = packageName
-            try await cmd.run()
+            localCmd.packageName = packageName
+            try await localCmd.run()
         }
     }
     
@@ -177,13 +161,22 @@ struct CosmicAddTests {
             FileManager.default.fileExists(atPath: unpackedArchivePkg.path())
         }
         
-        //        let zipPkg = Package.Module(...)
-        //
-        //        let zipPkgURL = try! await cmd.download(package: zipPkg)
-        //
-        //        #expect(throws: Never.self) {
-        //            let unpackedZipPkgURL = try cmd.unpack(package: zipPkg, at: zipPkgURL)
-        //            FileManager.default.fileExists(atPath: unpackedZipPkgURL.path())
-        //        }
+        let zipPkg = Package.Module(
+            name: "k9s",
+            url: "https://github.com/derailed/k9s/releases/download/v0.26.0/k9s_Darwin_arm64.tar.gz",
+            purl: "pkg:golang/github.com/derailed/k9s@0.26.0",
+            version: "0.26.0",
+            hash: "43df569e527141dbfc53d859d7675b71c2cfc597ffa389a20f91297c6701f255",
+            executablePaths: ["/k9s"],
+            testArgs: ["version", "--short"],
+            type: .zip,
+            isBundle: false
+        )
+
+        let zipPkgURL = try! await cmd.download(package: zipPkg)
+
+        #expect(throws: Cosmic.Add.AddError.invalidPackage) {
+            _ = try cmd.unpack(package: zipPkg, at: zipPkgURL)
+        }
     }
 }

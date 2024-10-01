@@ -1,0 +1,39 @@
+#!/bin/zsh
+
+echo "Running preinstall script..."
+
+# Define variables
+COSMIC_DIR="$HOME/.cosmic"
+PKL_VERSION='0.26.3'
+PKL_ARCH='macos-aarch64'
+PKL_URL="https://github.com/apple/pkl/releases/download/${PKL_VERSION}/pkl-${PKL_ARCH}"
+PKL_DEST="$COSMIC_DIR/pkl"
+PATHS_FILE="/etc/paths.d/cosmic"
+
+# Create the cosmic directory if it does not exist
+if [ ! -d "$COSMIC_DIR" ]; then
+    mkdir -p "$COSMIC_DIR" || { echo "Failed to create directory $COSMIC_DIR"; exit 1; }
+else
+    echo "$COSMIC_DIR already exists."
+fi
+
+# Download the PKL file
+echo "Downloading PKL from $PKL_URL..."
+if curl -L -o "$PKL_DEST" "$PKL_URL"; then
+    chmod +x "$PKL_DEST" || { echo "Failed to make $PKL_DEST executable"; exit 1; }
+    echo "Downloaded and prepared PKL successfully."
+else
+    echo "Failed to download PKL from $PKL_URL"
+    exit 1
+fi
+
+# Append the .cosmic folder to the user's PATH if not already present
+if [ ! -f "$PATHS_FILE" ]; then
+    echo "$COSMIC_DIR" | sudo tee "$PATHS_FILE" > /dev/null || { echo "Failed to update PATH"; exit 1; }
+    echo "Added $COSMIC_DIR to PATH."
+else
+    echo "$PATHS_FILE already exists. Not modifying PATH."
+fi
+
+echo "Preinstall script completed successfully."
+exit 0

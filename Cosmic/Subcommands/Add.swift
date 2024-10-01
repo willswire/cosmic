@@ -113,7 +113,8 @@ extension Cosmic {
             case .binary:
                 resultURL = url
             case .zip:
-                resultURL = try unzip(from: url.path(), for: package.name)
+                //resultURL = try unzip(from: url.path(), for: package.name)
+                throw AddError.invalidPackage
             case .archive:
                 resultURL = try unarchive(
                     from: url.path(), for: package.name, strip: package.isBundle)
@@ -173,7 +174,7 @@ extension Cosmic {
         func install(package: Package.Module, from url: URL) async throws {
             log("Installing package...")
             let homePackagesPath = fileManager.homeDirectoryForCurrentUser
-                .appendingPathComponent("Packages")
+                .appendingPathComponent(".cosmic")
             
             if !fileManager.fileExists(atPath: homePackagesPath.path) {
                 try fileManager.createDirectory(
