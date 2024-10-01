@@ -44,7 +44,9 @@ extension Cosmic {
         func locate(packageName: String) async throws -> Package.Module {
             log("Locating package...")
             
-            let manifestURL = URL(string: "https://raw.githubusercontent.com/willswire/cosmic-pkgs/refs/tags/v0.0.2/\(packageName).pkl")!
+            guard let manifestURL = URL(string: "https://raw.githubusercontent.com/willswire/cosmic-pkgs/refs/tags/v0.0.2/\(packageName).pkl") else {
+                preconditionFailure("Invalid package manifest repository URL.")
+            }
             
             // Check if the manifest exists by performing a HEAD request.
             let (_, response) = try await URLSession.shared.data(from: manifestURL)
@@ -69,7 +71,9 @@ extension Cosmic {
         func download(package: Package.Module) async throws -> URL {
             log("Downloading package...", debug: "Remote URL: \(package.url)")
             
-            let packageURL = URL(string: package.url)!
+            guard let packageURL = URL(string: package.url) else {
+                preconditionFailure("Invalid package manifest URL.")
+            }
             
             do {
                 let (location, response) = try await sharedSession.download(from: packageURL)

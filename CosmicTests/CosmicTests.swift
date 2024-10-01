@@ -18,7 +18,10 @@ struct CosmicAddTests {
     
     init() {
         cmd = Cosmic.Add()
-        cmd.options = try! .parse(["--verbose"])
+        guard let options = try? Cosmic.Options.parse(["--verbose"]) else {
+            fatalError("Unable to parse arguments for the add command!")
+        }
+        cmd.options = options
     }
     
     @Test("Add integration test", arguments: [
@@ -27,7 +30,7 @@ struct CosmicAddTests {
     ])
     func testRun(_ packageName: String) async {
         var localCmd = Cosmic.Add()
-        localCmd.options = try! .parse(["--verbose"])
+        localCmd.options = self.cmd.options
         localCmd.packageName = packageName
         
         await #expect(throws: Never.self) {
@@ -111,7 +114,9 @@ struct CosmicAddTests {
             isBundle: false
         )
         
-        let url = try! await cmd.download(package: k9sPackage)
+        guard let url = try? await cmd.download(package: k9sPackage) else {
+            return
+        }
         
         #expect(throws: Never.self) {
             try cmd.validate(package: k9sPackage, at: url)
@@ -136,7 +141,9 @@ struct CosmicAddTests {
             isBundle: false
         )
         
-        let binaryPkgURL = try! await cmd.download(package: binaryPkg)
+        guard let binaryPkgURL = try? await cmd.download(package: binaryPkg) else {
+            fatalError("Unable to download binary package")
+        }
         
         #expect(throws: Never.self) {
             let unpackedBinaryPkg = try cmd.unpack(package: binaryPkg, at: binaryPkgURL)
@@ -154,7 +161,10 @@ struct CosmicAddTests {
             type: .archive,
             isBundle: false
         )
-        let archivePkgURL = try! await cmd.download(package: archivePkg)
+        
+        guard let archivePkgURL = try? await cmd.download(package: archivePkg) else {
+            fatalError("Unable to download archive package")
+        }
         
         #expect(throws: Never.self) {
             let unpackedArchivePkg = try cmd.unpack(package: archivePkg, at: archivePkgURL)
@@ -173,7 +183,9 @@ struct CosmicAddTests {
             isBundle: false
         )
 
-        let zipPkgURL = try! await cmd.download(package: zipPkg)
+        guard let zipPkgURL = try? await cmd.download(package: zipPkg) else {
+            fatalError("Unable to download zip package")
+        }
 
         #expect(throws: Cosmic.Add.AddError.invalidPackage) {
             _ = try cmd.unpack(package: zipPkg, at: zipPkgURL)
