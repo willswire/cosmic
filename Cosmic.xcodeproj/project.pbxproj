@@ -41,7 +41,6 @@
 				Common/Utils.swift,
 				Cosmic.swift,
 				Subcommands/Add.swift,
-				Subcommands/Setup.swift,
 			);
 			target = 6BD783982C98FBFF009EEB33 /* CosmicTests */;
 		};
