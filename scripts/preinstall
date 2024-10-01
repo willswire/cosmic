@@ -1,0 +1,34 @@
+#!/bin/zsh
+
+set -euo pipefail
+
+echo "Running preinstall script..."
+
+# Define variables
+PKL_VERSION='0.26.3'
+PKL_ARCH='macos-aarch64'
+PKL_URL="https://github.com/apple/pkl/releases/download/${PKL_VERSION}/pkl-${PKL_ARCH}"
+PKL_DEST="/usr/local/bin/pkl"
+
+# Ensure the destination directory exists and is writable
+if [ ! -d "$(dirname "$PKL_DEST")" ]; then
+    echo "Creating directory $(dirname "$PKL_DEST")..."
+    sudo mkdir -p "$(dirname "$PKL_DEST")" || { echo "Failed to create directory $(dirname "$PKL_DEST")"; exit 1; }
+fi
+
+# Download the PKL file
+echo "Downloading PKL from $PKL_URL..."
+if curl -L --fail -o "$PKL_DEST" "$PKL_URL"; then
+    if sudo chmod +x "$PKL_DEST"; then
+        echo "Downloaded and installed PKL successfully to /usr/local/bin."
+    else
+        echo "Failed to make $PKL_DEST executable"
+        exit 1
+    fi
+else
+    echo "Failed to download PKL from $PKL_URL"
+    exit 1
+fi
+
+echo "Preinstall script completed successfully."
+exit 0

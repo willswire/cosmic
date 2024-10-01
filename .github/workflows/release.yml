@@ -63,9 +63,6 @@ jobs:
           SCHEME: Cosmic
           ARCHIVE: Cosmic.xcarchive
 
-      - name: Copy pkl to archive
-        run: sudo cp /usr/local/bin/pkl Cosmic.xcarchive/Products/usr/local/bin/pkl
-
       - name: Build installer package
         run: |
           pkgbuild --root "Cosmic.xcarchive/Products" \
