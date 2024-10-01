@@ -15,6 +15,9 @@ let sharedSession: URLSession = {
     return URLSession(configuration: configuration)
 }()
 
+/// Shared, default File Manager
+let fileManager: FileManager = .default
+
 /// Extension providing utility properties to `Digest`.
 extension Digest {
     /// Array of bytes representing the digest.

@@ -17,6 +17,7 @@ extension Cosmic {
     struct Setup: AsyncParsableCommand {
         static var configuration = CommandConfiguration(abstract: "Setup cosmic.")
         @OptionGroup var options: Cosmic.Options
+        @Flag var force: Bool = false
         
         enum SetupError: Error {
             case pklError(String)
@@ -31,7 +32,7 @@ extension Cosmic {
         mutating func run() async throws {
             // Check if setup has been run before
             let defaults = UserDefaults.standard
-            if defaults.bool(forKey: "hasRunSetup") && !options.force {
+            if defaults.bool(forKey: "hasRunSetup") && !force {
                 log("Setup has already been run. Are you sure you want to run it again?")
                 log("If so, append `--force` to the command to force setup.")
                 // You can ask the user for confirmation here or exit early if desired.
@@ -181,7 +182,20 @@ extension Cosmic {
             try FileManager.default.copyItem(atPath: profilePath, toPath: backupPath)
         }
         
-        /// Logs a message if the verbose option is enabled.
-        func log(_ message: String) {}
+        /// Logs messages to console based on the configured log level.
+        /// - Parameters:
+        ///   - info: Information message to log.
+        ///   - debug: Debug message to log.
+        func log(_ info: String? = nil, debug: String? = nil) {
+            if let info {
+                print(info)
+            }
+            
+            if let debug {
+                if options.verbose {
+                    print(debug)
+                }
+            }
+        }
     }
 }
