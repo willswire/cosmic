@@ -63,6 +63,9 @@ jobs:
           SCHEME: Cosmic
           ARCHIVE: Cosmic.xcarchive
 
+      - name: Copy pkl to archive
+        run: sudo cp /usr/local/bin/pkl Cosmic.xcarchive/Products/usr/local/bin/pkl
+
       - name: Build installer package
         run: |
           pkgbuild --root "Cosmic.xcarchive/Products" \
@@ -70,6 +73,7 @@ jobs:
             --version "${{ github.ref }}" \
             --install-location "/" \
             --sign="Developer ID Installer: William Walker (QSQY64SHJ5)" \
+            --scripts "scripts/" \
             cosmic.pkg
 
       - name: Notarize package
@@ -102,7 +106,7 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload binary
+      - name: Upload pkg installer
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

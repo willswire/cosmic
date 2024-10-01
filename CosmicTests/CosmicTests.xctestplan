@@ -21,7 +21,7 @@
   },
   "testTargets" : [
     {
-      "parallelizable" : false,
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Cosmic.xcodeproj",
         "identifier" : "6BD783982C98FBFF009EEB33",

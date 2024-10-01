@@ -14,149 +14,232 @@ import PklSwift
 extension Cosmic {
     struct Add: AsyncParsableCommand {
         static var configuration = CommandConfiguration(abstract: "Add a package.")
+        
         @OptionGroup var options: Cosmic.Options
-        @Argument(help: "The name of the package to add.") var package: String
-
+        
+        @Argument(help: "The name of the package to add.") var packageName: String
+        
         enum AddError: Error {
-            case manifestNotFound(String)
-            case executeProcessFailed(String)
-            case downloadFailed(String)
-            case missingExecutablePath(String)
+            case packageNotFound
+            case executeProcessFailed
+            case downloadFailed
+            case invalidPackage
+            case missingExecutablePath
         }
-
+                
+        /// Command's main entry when run is executed, adding the package by process of locating, downloading, validating, unpacking, testing, and installing.
         mutating func run() async throws {
-            let package = try await Package.loadFrom(
-                source: .url(packageManifestPath(for: package)))
-            log("package fetched as \(package.name)")
-
+            let package = try await locate(packageName: packageName)
             let downloadLocation = try await download(package: package)
-            log("package downloaded to \(downloadLocation.path)")
-
             try validate(package: package, at: downloadLocation)
-            log("package is valid: \(true)")
-
             let unpackedLocation = try unpack(package: package, at: downloadLocation)
-            log("package unpacked: \(unpackedLocation.path)")
-
-            let exitCode = try execute(package: package, at: unpackedLocation)
-            log("\(package.name) terminated with status: \(exitCode)")
-
-            let installResult = try await install(package: package, from: unpackedLocation)
-            log("\(package.name) installed: \(installResult)")
+            try execute(package: package, at: unpackedLocation)
+            try await install(package: package, from: unpackedLocation)
         }
-
-        func packageManifestPath(for packageName: String) throws -> URL {
-            guard
-                let manifestURL = URL(
-                    string:
-                        "https://raw.githubusercontent.com/willswire/cosmic-pkgs/refs/tags/v0.0.2/\(packageName).pkl"
-                )
-            else {
-                throw AddError.manifestNotFound(
-                    "Could not find a valid package manifest for \(packageName)")
+        
+        /// Locates the package manifest and loads the package information.
+        /// - Parameter packageName: The name of the package to locate.
+        /// - Returns: The located `Package.Module`.
+        /// - Throws: `AddError.manifestNotFound` if the manifest URL is incorrect or cannot be found.
+        func locate(packageName: String) async throws -> Package.Module {
+            log("Locating package...")
+            
+            guard let manifestURL = URL(string: "https://raw.githubusercontent.com/willswire/cosmic-pkgs/refs/tags/v0.0.2/\(packageName).pkl") else {
+                preconditionFailure("Invalid package manifest repository URL.")
             }
-            return manifestURL
+            
+            // Check if the manifest exists by performing a HEAD request.
+            let (_, response) = try await URLSession.shared.data(from: manifestURL)
+            
+            // Check the response status code to ensure the manifest exists.
+            guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+                throw AddError.packageNotFound
+            }
+            
+            // Load the package from the URL.
+            let package = try await Package.loadFrom(source: .url(manifestURL))
+            log(debug: "Located package \(package.name) with version: \(package.version)")
+            
+            return package
         }
-
+        
+        
+        /// Downloads the package.
+        /// - Parameter package: The package module to download.
+        /// - Returns: URL where the package is downloaded.
+        /// - Throws: `AddError.downloadFailed` if the package cannot be downloaded.
         func download(package: Package.Module) async throws -> URL {
+            log("Downloading package...", debug: "Remote URL: \(package.url)")
+            
             guard let packageURL = URL(string: package.url) else {
-                throw AddError.downloadFailed("Could not download package from \(package.url)")
+                preconditionFailure("Invalid package manifest URL.")
             }
-            let (location, _) = try await sharedSession.download(from: packageURL)
-            return location
+            
+            do {
+                let (location, response) = try await sharedSession.download(from: packageURL)
+                guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+                    throw AddError.downloadFailed
+                }
+                log(debug: "Downloaded \(package.name) to: \(location.path)")
+                return location
+            } catch {
+                throw AddError.downloadFailed
+            }
         }
-
+        
+        /// Validates the downloaded package by checking its hash.
+        /// - Parameters:
+        ///   - package: The package module to validate.
+        ///   - url: URL where the downloaded package is located.
+        /// - Throws: `AddError.downloadFailed` if the hash does not match.
         func validate(package: Package.Module, at url: URL) throws {
             let data = try Data(contentsOf: url)
             let calculatedHash = SHA256.hash(data: data).hexStr
+            log(
+                "Validating package...",
+                debug: "Calculated hash: \(calculatedHash), Expected hash: \(package.hash)")
             guard package.hash.caseInsensitiveCompare(calculatedHash) == .orderedSame else {
-                throw AddError.downloadFailed("Hash mismatch")
+                throw AddError.invalidPackage
             }
+            log(debug: "Validation successful for \(package.name)")
         }
-
+        
+        /// Unpacks the downloaded package.
+        /// - Parameters:
+        ///   - package: The package module to unpack.
+        ///   - url: URL where the downloaded package is located.
+        /// - Returns: URL where the package is unpacked.
+        /// - Throws: IOException if the package could not be unpacked.
         func unpack(package: Package.Module, at url: URL) throws -> URL {
+            log("Unpacking package...", debug: "Package type: \(package.type.rawValue)")
+            let resultURL: URL
             switch package.type {
             case .binary:
-                return url
+                resultURL = url
             case .zip:
-                return try unzip(from: url.path(), for: package.name)
+                //resultURL = try unzip(from: url.path(), for: package.name)
+                throw AddError.invalidPackage
             case .archive:
-                return try unarchive(from: url.path(), for: package.name, strip: package.isBundle)
+                resultURL = try unarchive(
+                    from: url.path(), for: package.name, strip: package.isBundle)
             }
+            log(debug: "Unpacked \(package.name) to: \(resultURL.path)")
+            return resultURL
         }
-
-        func execute(package: Package.Module, at url: URL) throws -> Int {
-            var terminationStatusProduct: Int = 0
-            
-            for executablePath in package.executablePaths {
-                
-                let fileURL = url.appendingPathComponent(executablePath)
-                
-                try setExecutablePermission(for: fileURL)
-                
-                let process = Process()
-                
-                if package.type != .binary {
-                    process.currentDirectoryURL = url
-                }
-                
-                process.executableURL = fileURL
-                process.arguments = package.testArgs
-                process.standardOutput = nil
-                process.standardError = nil
-                
-                try process.run()
-                process.waitUntilExit()
-                
-                terminationStatusProduct *= Int(process.terminationStatus)
-            }
-
-            guard terminationStatusProduct == 0 else {
-                throw AddError.executeProcessFailed(
-                    "No succesful executables were found")
-            }
-            
-            return terminationStatusProduct
-        }
-
-        func install(package: Package.Module, from url: URL) async throws -> Bool {
-            let fm = FileManager.default
-            let homePackagesPath = fm.homeDirectoryForCurrentUser.appendingPathComponent("Packages")
-            if !fm.fileExists(atPath: homePackagesPath.path) {
-                try fm.createDirectory(at: homePackagesPath, withIntermediateDirectories: true)
-            }
+        
+        func execute(package: Package.Module, at url: URL) throws {
+                    log(
+                        debug: "Executable paths: \(package.executablePaths.joined(separator: "\n"))"
+                    )
+                    
+                    var terminationStatusProduct: Int = 0
+                    
+                    for executablePath in package.executablePaths {
+                        log(debug: "Executable path: \(executablePath)")
                         
-            if package.isBundle {
-                let destination = homePackagesPath.appendingPathComponent("_" + package.name)
-                
-                try fm.moveItem(at: url, to: destination)
-                
-                for path in package.executablePaths {
-                    guard let executable = path.split(separator: "/").last else {
-                        throw AddError.missingExecutablePath(destination.path())
+                        let fileURL = url.appendingPathComponent(executablePath)
+                        
+                        log(debug: "Setting executable permissions for file: \(fileURL.path)...")
+                        try setExecutablePermission(for: fileURL)
+                        
+                        let process = Process()
+                        
+                        if package.type != .binary {
+                            log(debug: "Setting current directory to \(url.path)")
+                            process.currentDirectoryURL = url
+                        }
+                        
+                        process.executableURL = fileURL
+                        process.arguments = package.testArgs
+                        process.standardOutput = nil
+                        process.standardError = nil
+                        
+                        log(debug: "Running process for file: \(fileURL.path)...")
+                        try process.run()
+                        process.waitUntilExit()
+                        
+                        log(debug: "Process exited with status: \(process.terminationStatus)")
+                        terminationStatusProduct *= Int(process.terminationStatus)
                     }
-                    try fm.createSymbolicLink(at: homePackagesPath.appendingPathComponent(String(executable)), withDestinationURL: destination.appending(path: path))
+                    
+                    guard terminationStatusProduct == 0 else {
+                        throw AddError.executeProcessFailed
+                    }
+                    
+            log(debug: "All executables were successfully installed")
                 }
-                
-            } else {
-                let destination = homePackagesPath.appendingPathComponent(package.name)
-                
-                guard let primaryExecutablePath = package.executablePaths.first else {
-                    throw AddError.missingExecutablePath(destination.path())
-                }
-                
-                try fm.moveItem(at: url.appendingPathComponent(primaryExecutablePath), to: destination)
+        
+        /// Installs the package to the home directory.
+        /// - Parameters:
+        ///   - package: The package module to install.
+        ///   - url: URL where the unpacked package is located.
+        /// - Returns: `true` if installation is successful, `false` otherwise.
+        /// - Throws: `IOException` if the package cannot be installed.
+        func install(package: Package.Module, from url: URL) async throws {
+            log("Installing package...")
+            let homePackagesPath = fileManager.homeDirectoryForCurrentUser
+                .appendingPathComponent(".cosmic")
+            
+            if !fileManager.fileExists(atPath: homePackagesPath.path) {
+                try fileManager.createDirectory(
+                    at: homePackagesPath, withIntermediateDirectories: true)
             }
             
-            return package.executablePaths.reduce(true) { partialResult, next in
-                let executable = String(next.split(separator: "/").last ?? "")
-                return partialResult && fm.isExecutableFile(atPath: homePackagesPath.appendingPathComponent(executable).path)
+            let destination: URL
+            if package.isBundle {
+                destination = homePackagesPath.appendingPathComponent("_" + package.name)
+                try fileManager.moveItem(at: url, to: destination)
+                try createSymlinks(for: package, at: destination, in: homePackagesPath)
+            } else {
+                destination = homePackagesPath.appendingPathComponent(package.name)
+                try fileManager.moveItem(
+                    at: url.appendingPathComponent(package.executablePaths.first ?? ""),
+                    to: destination)
+            }
+            
+            let allInstalled = package.executablePaths.allSatisfy { path in
+                fileManager.isExecutableFile(
+                    atPath: homePackagesPath.appendingPathComponent(
+                        String(path.split(separator: "/").last ?? "")
+                    ).path)
+            }
+            
+            log(allInstalled ? "Installation complete!" : "Installation failed.")
+        }
+        
+        /// Creates symlinks for executable paths within the installed package.
+        /// - Parameters:
+        ///   - package: The package module containing executables.
+        ///   - destination: URL where the package is installed.
+        ///   - homePackagesPath: Path to the home packages directory.
+        /// - Throws: `IOException` if symlink creation fails or executable path is missing.
+        func createSymlinks(
+            for package: Package.Module, at destination: URL, in homePackagesPath: URL
+        ) throws {
+            for path in package.executablePaths {
+                guard let executable = path.split(separator: "/").last else {
+                    throw AddError.missingExecutablePath
+                }
+                log(debug: "Creating symlink for \(executable)")
+                try fileManager.createSymbolicLink(
+                    at: homePackagesPath.appendingPathComponent(String(executable)),
+                    withDestinationURL: destination.appending(path: path))
             }
         }
-
-        func log(_ message: String) {
-            if options.verbose {
-                print(message)
+        
+        /// Logs messages to console based on the configured log level.
+        /// - Parameters:
+        ///   - info: Information message to log.
+        ///   - debug: Debug message to log.
+        func log(_ info: String? = nil, debug: String? = nil) {
+            if let info {
+                print(info)
+            }
+            
+            if let debug {
+                if options.verbose {
+                    print(debug)
+                }
             }
         }
     }

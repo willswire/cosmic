@@ -1,0 +1,18 @@
+#!/bin/zsh
+
+echo "Running postinstall script..."
+
+# Define variables
+HOME_COSMIC_DIR="$HOME/.cosmic"
+PATHS_FILE="/etc/paths.d/cosmic"
+
+# Append the .cosmic folder to the user's PATH if not already present
+if [ ! -f "$PATHS_FILE" ]; then
+    echo "$HOME_COSMIC_DIR" | sudo tee "$PATHS_FILE" > /dev/null || { echo "Failed to update PATH"; exit 1; }
+    echo "Added $HOME_COSMIC_DIR to PATH."
+else
+    echo "$PATHS_FILE already exists. Not modifying PATH."
+fi
+
+echo "Postinstall script completed successfully."
+exit 0
